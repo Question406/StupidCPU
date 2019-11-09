@@ -100,4 +100,12 @@
 `define OR 6'b011111
 `define AND 6'b100000
 
+//for memctrl
+`define mem_LB 3'b000
+`define mem_LH 3'b001
+`define mem_LW 3'b010
+`define mem_SB 3'b011
+`define mem_SH 3'b100
+`define mem_SW 3'b101
+
 `endif

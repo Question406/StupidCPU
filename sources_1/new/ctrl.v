@@ -9,6 +9,7 @@ module ctrl(
     
     input wire set_pc_i, 
     input wire set_pc_add_i,
+    
 //    output wire[4:0] flush,
 //    output wire set_pc_o,
 //    output wire[`InstAddrBus] set_pc_add_o,
