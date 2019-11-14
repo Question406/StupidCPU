@@ -3,6 +3,8 @@
 
 `define RstEnable     1'b1
 `define RstDisable    1'b0
+`define InstFlush     1'b1
+`define InstNoFlush   1'b0
 `define ZeroWord      32'h00000000
 `define WriteEnable   1'b1
 `define WriteDisable  1'b0
@@ -101,11 +103,12 @@
 `define AND 6'b100000
 
 //for memctrl
-`define mem_LB 3'b000
-`define mem_LH 3'b001
-`define mem_LW 3'b010
-`define mem_SB 3'b011
-`define mem_SH 3'b100
-`define mem_SW 3'b101
+// 3'b000 means no mem op
+`define mem_LB 3'b001
+`define mem_LH 3'b010
+`define mem_LW 3'b011
+`define mem_SB 3'b100
+`define mem_SH 3'b101
+`define mem_SW 3'b110
 
 `endif

@@ -9,7 +9,6 @@ module ex(
     input wire[`RegBus] reg1_i,
     input wire[`RegBus] reg2_i,
     input wire[`RegAddrBus] wd_i,
-    input wire[`RegBus] wdata,
     input wire wreg_i,
     
     output reg[`RegAddrBus] wd_o,
@@ -21,51 +20,80 @@ module ex(
     output reg set_pc_o,
     output reg[`RegBus] pc_addr_o, // change pc to .
     
+    // when branch taken
+    output reg if_idflush_o,
+    output reg id_exflush_o,
+    
     // data for mem write
     output reg[`RegBus] mem_w_data,
+    //ATTENTION: maybe wire?
     output reg[`AluSelBus] mem_op_type,
     
     // for data forwarding
-    output ex_forwarding_wd,
+    output wire ex_forwarding_wd,
     output reg[`RegAddrBus] ex_forwarding_rd,
     output reg[`RegBus] ex_forwarding_data
     
 );
     reg[`RegBus] logicout;
+
+    assign ex_forwarding_wd = (aluop_i != `Inst_Branch) ? 0 : 1; 
     
     always @ (*) begin
         if (rst == `RstEnable) begin
-            logicout <= `ZeroWord;
+            wd_o <= 0;
+            wreg_o <= 0;
+            wdata_o <= `ZeroWord;
+            set_pc_o <= 0;
+            pc_addr_o <= `ZeroWord;
+            if_idflush_o <= 0;
+            id_exflush_o <= 0;
+            mem_w_data <= `ZeroWord;
+            mem_op_type <= 6'b0;
+            ex_forwarding_rd <= 0;
+            ex_forwarding_data <= `ZeroWord;
         end else begin
+            if_idflush_o <= `InstNoFlush;
+            id_exflush_o <=  `InstNoFlush;
+            set_pc_o <= `WriteDisable;
+            ex_forwarding_rd <= 0;
+            ex_forwarding_data <= `ZeroWord;
+
+            mem_w_data <= 32'b0;
             case (aluop_i) 
-                 `Inst_LUI : begin
+                `Inst_LUI : begin
                     wd_o <= wd_i;
                     wreg_o <= `WriteEnable;
-                    wdata_o <= wdata;
-                 end
-                 `Inst_AUIPC : begin
+                    wdata_o <= imm_i;
+                end
+                `Inst_AUIPC : begin
                     wd_o <= wd_i;
                     wreg_o <= `WriteEnable;
                     wdata_o <= pc_i + imm_i;
                     wreg_o <= `WriteEnable;
-                 end
-                 `Inst_JAL : begin
-                 // jump to pc + imm_i
+                end
+                //TODO: some branch inst jump directly, don't need to determine until ex
+                `Inst_JAL : begin
+                // jump to pc + imm_i
                     wreg_o <= `WriteEnable;
                     wdata_o <= pc_i + 3'b100;
                     wd_o <= wd_i;
                     set_pc_o <= `WriteEnable;
                     pc_addr_o <= pc_i + imm_i;
-                 end
-                 `Inst_JALR : begin
+                    if_idflush_o <= `InstFlush;
+                    id_exflush_o <= `InstFlush;              
+                end
+                `Inst_JALR : begin
                  // jumpto rs1 + imm_i
                     wreg_o <= `WriteEnable;
                     wdata_o <= pc_i + 3'b100;
                     wd_o <= wd_i;
                     set_pc_o <= `WriteEnable;
                     pc_addr_o <=  reg1_i + imm_i;
-                 end
-                 `Inst_Branch : begin
+                    if_idflush_o <= `InstFlush;
+                    id_exflush_o <= `InstFlush;
+                end
+                `Inst_Branch : begin
                     set_pc_o <= `WriteEnable;
                     wd_o <= 5'b00000;
                     wreg_o <= `WriteDisable;
@@ -74,66 +102,79 @@ module ex(
                                 if (reg1_i == reg2_i) begin
                                     set_pc_o <= `WriteEnable;
                                     pc_addr_o <= pc_i + imm_i;
+                                    if_idflush_o <= `InstFlush;
+                                    id_exflush_o <= `InstFlush;
                                 end
                         end
                         `BNE : begin
                                 if (reg1_i != reg2_i) begin
                                     set_pc_o <= `WriteEnable;
                                     pc_addr_o <= pc_i + imm_i;
+                                    if_idflush_o <= `InstFlush;
+                                    id_exflush_o <= `InstFlush;
                                 end
                         end
                         `BLT : begin
                                 if ($signed(reg1_i) < $signed(reg2_i)) begin
                                     set_pc_o <= `WriteEnable;
                                     pc_addr_o <= pc_i + imm_i;
+                                    if_idflush_o <= `InstFlush;
+                                    id_exflush_o <= `InstFlush;
                                 end
                         end
                         `BGE : begin
                                 if ($signed(reg1_i) >= $signed(reg2_i)) begin
                                     set_pc_o <= `WriteEnable;
                                     pc_addr_o <= pc_i + imm_i;
+                                    if_idflush_o <= `InstFlush;
+                                    id_exflush_o <= `InstFlush;
                                 end
                         end
                         `BLTU : begin
                                 if (reg1_i < reg2_i) begin
                                     set_pc_o <= `WriteEnable;
                                     pc_addr_o <= pc_i + imm_i;
+                                    if_idflush_o <= `InstFlush;
+                                    id_exflush_o <= `InstFlush;
                                 end
                         end
                         `BGEU : begin
                                 if (reg1_i >= reg2_i) begin
                                     set_pc_o <= `WriteEnable;
                                     pc_addr_o <= pc_i + imm_i;
+                                    if_idflush_o <= `InstFlush;
+                                    id_exflush_o <= `InstFlush;
                                 end
                         end
                     endcase
-                 end
-                 `Inst_Load: begin
+                end
+                `Inst_Load: begin
+                    wreg_o <= `WriteEnable;
                     wdata_o <= reg1_i + imm_i;
-                    mem_w_data <= 32'b0;
                     mem_op_type <= alusel_i;
-                 end
-                 `Inst_Save: begin
+                end
+                `Inst_Save: begin
+                    wreg_o <= `WriteEnable;
                     wdata_o <= reg1_i + imm_i;
                     mem_w_data <= reg2_i;
                     mem_op_type <= alusel_i;
-                 end
-                 `InstClass_LogicOP : begin
+                end
+                `InstClass_LogicOP : begin
                     wd_o <= wd_i;
                     wreg_o <= `WriteEnable;
                     case (alusel_i)
-                        `ADDI : wdata_o = wdata + imm_i; 
-                        `SLTI : wdata_o = ($signed(wdata) < $signed(imm_i));
-                        `SLTIU : wdata_o = wdata < imm_i;
-                        `XORI : wdata_o = wdata ^ imm_i;
-                        `ORI : wdata_o = wdata | imm_i;
-                        `ANDI : wdata_o = wdata & imm_i;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                        `SLLI : wdata_o = wdata << imm_i[4:0];
-                        `SRLI : wdata_o =  wdata >> imm_i[4:0];
-                        `SRAI : wdata_o =  ($signed(wdata)) >>> imm_i[4:0];
+                        `ADDI : wdata_o = reg1_i + imm_i; 
+                        `SLTI : wdata_o = ($signed(reg1_i) < $signed(imm_i));
+                        `SLTIU : wdata_o = reg1_i < imm_i;
+                        `XORI : wdata_o = reg1_i ^ imm_i;
+                        `ORI : wdata_o = reg1_i | imm_i;
+                        `ANDI : wdata_o = reg1_i & imm_i;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                        `SLLI : wdata_o = reg1_i << imm_i[4:0];
+                        `SRLI : wdata_o =  reg1_i >> imm_i[4:0];
+                        `SRAI : wdata_o =  ($signed(reg1_i)) >>> imm_i[4:0];
                     endcase
-                 end
-                 `InstClass_ALUOp : begin
+                end
+                `InstClass_ALUOp : begin
                     wd_o <= wd_i;
                     wreg_o <= `WriteEnable;
                     case (alusel_i)
@@ -148,10 +189,20 @@ module ex(
                         `OR : wdata_o = reg1_i | reg2_i;
                         `AND : wdata_o = reg1_i & reg2_i;
                     endcase
-                 end
-                 default : begin
-                    
-                 end
+                end
+                default : begin
+                    wd_o <= 0;
+                    wreg_o <= 0;
+                    wdata_o <= `ZeroWord;
+                    set_pc_o <= 0;
+                    pc_addr_o <= `ZeroWord;
+                    if_idflush_o <= 0;
+                    id_exflush_o <= 0;
+                    mem_w_data <= `ZeroWord;
+                    mem_op_type <= 6'b0;
+                    ex_forwarding_rd <= 0;
+                    ex_forwarding_data <= `ZeroWord;
+                end
             endcase
         end
     end

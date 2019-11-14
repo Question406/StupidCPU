@@ -27,6 +27,8 @@ module regfile(
         end
     end
     
+    //integer i;
+
     always @(*) begin
         if (rst == `RstEnable) begin
             rdata1 <= `ZeroWord;
@@ -39,8 +41,8 @@ module regfile(
         end else begin
             rdata1 <= `ZeroWord;
         end
-    end 
-       
+    end     
+
     always @(*) begin
         if (rst == `RstEnable) begin
             rdata2 <= `ZeroWord;

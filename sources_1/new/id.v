@@ -127,6 +127,7 @@ module id(
     output reg[`RegAddrBus] reg2_addr_o,
     
     // to ex
+    output reg[`RegBus] id_pc_o,
     output reg[`AluOpBus] aluop_o,
     output reg[`AluSelBus] alusel_o,
     output reg[`RegBus] imm_o,
@@ -164,6 +165,7 @@ module id(
             reg2_addr_o <= `NOPRegAddr;
             imm_o = `ZeroWord;
         end else begin
+            id_pc_o <= pc_i;
             aluop_o <= `EXE_NOP_OP;
             alusel_o <= `EXE_RES_NOP;
             wreg_o <= `WriteDisable;
@@ -193,7 +195,7 @@ module id(
                 `InstClass_JAL : begin
                     wreg_o <= `WriteEnable;
                     wd_o <= rd;
-                    imm_o <= imm_U;        
+                    imm_o <= imm_J;        
                     aluop_o <= `Inst_JAL;            
                 end
                 `InstClass_JALR : begin
@@ -279,6 +281,7 @@ module id(
                     endcase
                 end
                 default: begin  
+                    id_pc_o <= `ZeroWord;
                     aluop_o <= `EXE_NOP_OP;
                     alusel_o <= `EXE_RES_NOP;
                     wd_o <= `NOPRegAddr;
@@ -294,7 +297,7 @@ module id(
         end          
     end 
     
-    // data forwarding
+    // with data forwarding
     always @(*) begin 
         if (rst == `RstEnable) begin 
             reg1_o <= `ZeroWord;

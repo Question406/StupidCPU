@@ -52,45 +52,9 @@ reg[`RegBus] addr_now;
 reg[`RegBus] data_writing;
 reg flag;
 
-reg[3:0] state;
-
     assign mem_busy = busy;
     assign mmem_addr = addr_now;
     assign mmem_r_w = r_w;
-    
-//    always @ (posedge clk) begin
-//        busy <= (busy || if_req_in) ? 1 : 0;
-//        if (rst) begin
-//            output_data <= `ZeroWord;
-//            addr_now <= `ZeroWord;
-//            r_w <= 1'b0;
-//            countdown <= 3'b000;
-//            output_length <= 3'b000;
-//            flag <= 1'b0;
-//            mmem_data <= 8'b0;
-//            get_inst <= 0;
-//            output_pc <= `ZeroWord;
-//            output_inst <= `ZeroWord;
-//            busy <= 0;
-//        end else begin
-//            if (if_req_in) begin
-//                if_mem <= 1'b0;
-//                get_inst <= 1'b0;
-//                output_pc <= addr_if_in;
-//                output_inst <= `ZeroWord;
-//                busy <= 1'b1;
-//                addr_now <= addr_if_in;
-//                //flag <= 1'b1;
-//                r_w <= 0;
-//                countdown <= 3'b100;
-//                output_length <= 3'b100;
-//            end else begin
-//                case state begin
-                    
-//                endcase 
-//            end
-//        end
-//    end
 
 always @ (posedge clk) begin
     //busy <= (busy || mem_req_in || if_req_in) ? 1 : 0;
@@ -170,40 +134,37 @@ always @ (posedge clk) begin
             end
             
         end else begin
-            if (countdown == 0) begin
-                busy <= 1'b0;
-                if (r_w == 1'b1) begin
-                    // finished write
-                    r_w <= 0;
-                    mmem_data <= `ZeroWord;
-                end else begin
-                    // finished read
-                    if (if_mem == 0) begin
-                        get_inst <= 1'b1;
-                        // output_inst = (output_data >> ((6'b000100 - output_length) << 3));
-                        output_data = output_data >> 8;
-                        output_data[31:24] = data_get;
-                        output_inst <= output_data ;
-                        //output_data = (output_data >> ((6'b000100 - output_length) << 3));
+                if (countdown == 0) begin
+                    busy <= 1'b0;
+                    if (r_w == 1'b1) begin
+                        // finished write
                         r_w <= 0;
-                    end 
-                end
-            end else begin
-            if(r_w == 1'b0) begin
-                output_data = output_data >> 8;
-                output_data[31:24] = data_get;
-            end else begin
-                mmem_data = data_writing[7:0];
-                data_writing = data_writing >> 8;
-                flag <= 1'b0;
-            end 
-                
-            countdown <= countdown - 1'b1;
-            addr_now <= addr_now + 1'b1;
-            end
+                        mmem_data <= `ZeroWord;
+                    end else begin
+                        // finished read
+                        if (if_mem == 0) begin
+                            get_inst <= 1'b1;
+                            // output_inst = (output_data >> ((6'b000100 - output_length) << 3));
+                            output_data = output_data >> 8;
+                            output_data[31:24] = data_get;
+                            output_inst <= output_data ;
+                            //output_data = (output_data >> ((6'b000100 - output_length) << 3));
+                            r_w <= 0;
+                        end 
+                    end
+                    end else begin
+                        if(r_w == 1'b0) begin
+                            output_data = output_data >> 8;
+                            output_data[31:24] = data_get;
+                        end else begin
+                            mmem_data = data_writing[7:0];
+                            data_writing = data_writing >> 8;
+                            flag <= 1'b0;
+                        end 
+                        countdown <= countdown - 1'b1;
+                        addr_now <= addr_now + 1'b1;
+                    end
         end
-    end
-    
+    end    
 end
-    
 endmodule
