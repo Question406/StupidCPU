@@ -11,7 +11,7 @@ module pc_reg(
     input wire mem_busy,
     
     // send to memctrl
-    output reg pc_memreq,
+    output wire pc_memreq,
     output reg[`InstAddrBus] pc,
     output reg ce
 );
@@ -25,12 +25,22 @@ module pc_reg(
     
     always @(posedge clk) begin
         if (ce == `ChipDisable) begin
-            pc <= 32'h00000000;
+            pc <= 32'h00000000;           
         end else if (set_pc_i == `WriteEnable) begin
             pc <= set_pc_add_i;
-        end  else begin //if (stall[0] == `NoStop) begin
+        end else if (mem_busy == 0) begin
             pc <= pc + 4'h4;
         end
     end
+    
+    assign pc_memreq = (mem_busy || ce == `ChipDisable) ? 0 : 1; 
+    
+//    always @(posedge clk) begin
+//        if (mem_busy == 0) begin
+//            pc_memreq <= 1;
+//        end else begin
+        
+//        end
+//    end
 
 endmodule

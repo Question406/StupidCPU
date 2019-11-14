@@ -9,8 +9,6 @@ module if_id(
     input wire[`InstAddrBus] if_pc,
     input wire[`InstBus] if_inst,
     
-    input wire if_idflush_i,
-    
     input wire[5:0] stall,
     
     output reg[`InstAddrBus] id_pc,
@@ -32,16 +30,14 @@ module if_id(
 //    end
 
         always @ (posedge clk) begin
-            if (rst == `RstEnable || get_inst == 1'b0 || if_idflush_i) begin
+            if (rst == `RstEnable || get_inst == 1'b0) begin
                 id_pc <= `ZeroWord;
                 id_inst <= `ZeroWord;
             end else begin
-//                if (get_inst == 1'b1) begin
-//                    id_pc <= if_pc;
-//                    id_inst <= if_inst;
-//                end
-                id_pc <= if_pc;
-                id_inst <= if_inst;
+                if (get_inst == 1'b1) begin
+                    id_pc <= if_pc;
+                    id_inst <= if_inst;
+                end
             end
         end
     
