@@ -21,11 +21,16 @@ module ex(
     output reg set_pc_o,
     output reg[`RegBus] pc_addr_o, // change pc to .
     
+    // when branch taken
+    output reg if_idflush_o,
+    output reg id_exflush_o,
+    
     // data for mem write
     output reg[`RegBus] mem_w_data,
     output reg[`AluSelBus] mem_op_type,
     
     // for data forwarding
+    output ex_forwarding_wd,
     output reg[`RegAddrBus] ex_forwarding_rd,
     output reg[`RegBus] ex_forwarding_data
     
@@ -36,11 +41,14 @@ module ex(
         if (rst == `RstEnable) begin
             logicout <= `ZeroWord;
         end else begin
+            if_idflush_o <= `InstNoFlush;
+            id_exflush_o <=  `InstNoFlush;
+            set_pc_o <= `WriteDisable;
             case (aluop_i) 
                  `Inst_LUI : begin
                     wd_o <= wd_i;
                     wreg_o <= `WriteEnable;
-                    wdata_o <= wdata;
+                    wdata_o <= imm_i;
                  end
                  `Inst_AUIPC : begin
                     wd_o <= wd_i;
@@ -48,6 +56,7 @@ module ex(
                     wdata_o <= pc_i + imm_i;
                     wreg_o <= `WriteEnable;
                  end
+                 //TODO: some branch inst jump directly, don't need to determine until ex
                  `Inst_JAL : begin
                  // jump to pc + imm_i
                     wreg_o <= `WriteEnable;
@@ -55,6 +64,8 @@ module ex(
                     wd_o <= wd_i;
                     set_pc_o <= `WriteEnable;
                     pc_addr_o <= pc_i + imm_i;
+                    if_idflush_o <= `InstFlush;
+                    id_exflush_o <= `InstFlush;              
                  end
                  `Inst_JALR : begin
                  // jumpto rs1 + imm_i
@@ -63,6 +74,8 @@ module ex(
                     wd_o <= wd_i;
                     set_pc_o <= `WriteEnable;
                     pc_addr_o <=  reg1_i + imm_i;
+                    if_idflush_o <= `InstFlush;
+                    id_exflush_o <= `InstFlush;
                  end
                  `Inst_Branch : begin
                     set_pc_o <= `WriteEnable;
@@ -73,36 +86,48 @@ module ex(
                                 if (reg1_i == reg2_i) begin
                                     set_pc_o <= `WriteEnable;
                                     pc_addr_o <= pc_i + imm_i;
+                                    if_idflush_o <= `InstFlush;
+                                    id_exflush_o <= `InstFlush;
                                 end
                         end
                         `BNE : begin
                                 if (reg1_i != reg2_i) begin
                                     set_pc_o <= `WriteEnable;
                                     pc_addr_o <= pc_i + imm_i;
+                                   if_idflush_o <= `InstFlush;
+                                   id_exflush_o <= `InstFlush;
                                 end
                         end
                         `BLT : begin
                                 if ($signed(reg1_i) < $signed(reg2_i)) begin
                                     set_pc_o <= `WriteEnable;
                                     pc_addr_o <= pc_i + imm_i;
+                                    if_idflush_o <= `InstFlush;
+                                    id_exflush_o <= `InstFlush;
                                 end
                         end
                         `BGE : begin
                                 if ($signed(reg1_i) >= $signed(reg2_i)) begin
                                     set_pc_o <= `WriteEnable;
                                     pc_addr_o <= pc_i + imm_i;
+                                    if_idflush_o <= `InstFlush;
+                                    id_exflush_o <= `InstFlush;
                                 end
                         end
                         `BLTU : begin
                                 if (reg1_i < reg2_i) begin
                                     set_pc_o <= `WriteEnable;
                                     pc_addr_o <= pc_i + imm_i;
+                                    if_idflush_o <= `InstFlush;
+                                    id_exflush_o <= `InstFlush;
                                 end
                         end
                         `BGEU : begin
                                 if (reg1_i >= reg2_i) begin
                                     set_pc_o <= `WriteEnable;
                                     pc_addr_o <= pc_i + imm_i;
+                                    if_idflush_o <= `InstFlush;
+                                    id_exflush_o <= `InstFlush;
                                 end
                         end
                     endcase
@@ -126,7 +151,7 @@ module ex(
                         `SLTIU : wdata_o = wdata < imm_i;
                         `XORI : wdata_o = wdata ^ imm_i;
                         `ORI : wdata_o = wdata | imm_i;
-                        `ANDI : wdata_o = wdata & imm_i;
+                        `ANDI : wdata_o = wdata & imm_i;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
                         `SLLI : wdata_o = wdata << imm_i[4:0];
                         `SRLI : wdata_o =  wdata >> imm_i[4:0];
                         `SRAI : wdata_o =  ($signed(wdata)) >>> imm_i[4:0];

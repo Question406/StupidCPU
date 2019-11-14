@@ -11,7 +11,7 @@ module minsopc_tb();
     
     initial begin
         rst = `RstEnable;//`RstEnable;
-        #25 rst = `RstDisable;//`RstDisable;
+        #50 rst = `RstDisable;//`RstDisable;
         #1000 $stop;
     end
     

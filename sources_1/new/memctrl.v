@@ -6,16 +6,18 @@ module memctrl(
     
     // memory request from if
     input wire if_req_in, // equal to lw
-    input wire [`RegBus] addr_if,
+    input wire [`RegBus] addr_if_in,
     
     // memory request from mem
     input wire mem_req_in,
-    input wire [`RegBus] addr_mem,
-    input wire [`RegBus] data_mem,
+    input wire [`RegBus] addr_mem_in,
+    input wire [`RegBus] data_mem_in,
     input wire [3:0] mem_req_type, // lb, lh, lw, sb, sh, sw
     
     // to cpu 
+    output reg [`RegBus] output_pc,
     output reg [`RegBus] output_data, // data get from main memory
+    output wire mem_busy, // tell if && mem whether could send request 
     
     // connect to main memory
     input wire [`RegBus] data_get,
@@ -41,30 +43,36 @@ always @ (posedge clk) begin
         if (~busy) begin
             if (mem_req_in) begin
                 busy <= 1'b1;
-                addr_now <= addr_mem;
+                addr_now <= addr_mem_in;
                 flag <= 1'b1;                
                 case (mem_req_type)
                     `mem_LB : begin
+                        r_w <= 1'b0;
                         countdown <= 3'b001;
                         output_length <= 3'b001;
                     end
                     `mem_LH : begin
+                        r_w <= 1'b0;
                         countdown <= 3'b010;
                         output_length <= 3'b010;
                     end
                     `mem_LW : begin
+                        r_w <= 1'b0;
                         countdown <= 3'b011;
                         output_length <= 3'b011;
                     end
                     `mem_SB : begin
+                        r_w <= 1'b1;
                         countdown <= 3'b001;
                         output_length <= 3'b001;
                     end
                     `mem_SH : begin
+                        r_w <= 1'b1;
                         countdown <= 3'b010;
                         output_length <= 3'b010;
                     end
                     `mem_SW : begin
+                        r_w <= 1'b1;
                         countdown <= 3'b011;
                         output_length <= 3'b011;
                     end
@@ -75,6 +83,14 @@ always @ (posedge clk) begin
                         output_length <= 0;  
                     end
                 endcase 
+            end else if (if_req_in) begin
+                busy <= 1'b1;
+                addr_now <= addr_if_in;
+                flag <= 1'b1;
+                countdown <= 3'b011;
+                output_length <= 3'b011;
+            end else begin
+                output_data <= `ZeroWord;
             end
             
         end else begin

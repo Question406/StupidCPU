@@ -3,6 +3,7 @@
 module control(
     input wire clk,
     input wire rst,
+    input wire[`RegBus] rom_addr_i,
     input wire[`RegBus] rom_data_i,
     
     output wire[`RegBus] rom_addr_o,
@@ -10,6 +11,8 @@ module control(
 );
 
     wire[`InstAddrBus] pc;
+    wire[`InstAddrBus] if_id_pc; 
+    
     wire[`InstAddrBus] id_pc_i;
     wire[`InstBus] id_inst_i;
     
@@ -50,18 +53,32 @@ module control(
     wire[`RegAddrBus] reg1_addr;
     wire[`RegAddrBus] reg2_addr;
     
+    wire set_pc;
+    wire [`RegBus] set_pc_addr;
+    
     pc_reg pc_reg0(
-        .clk(clk), .rst(rst), .pc(pc), .ce(rom_ce_o)
+        .clk(clk), .rst(rst), .pc(pc), .ce(rom_ce_o),
+        .set_pc_i(set_pc), .set_pc_add_i(set_pc_addr)
     );
     
     assign rom_addr_o = pc;
     
+    wire if_idflush;
+    wire id_exflush;
+    
+    
     if_id if_id0(
-        .clk(clk), .rst(rst), .if_pc(pc),
+        .clk(clk), .rst(rst), .if_pc(rom_addr_i),
         .if_inst(rom_data_i), .id_pc(id_pc_i),
+        .if_idflush_i(if_idflush),
         .id_inst(id_inst_i)
     );
     
+    wire [`RegBus] imm;
+    wire [`RegBus] imm_ex;
+    
+    wire [`RegBus] id_ex_pc;
+   
     id id0(
         .rst(rst), .pc_i(id_pc_i), .inst_i(id_inst_i),
         .reg1_data_i(reg1_data), .reg2_data_i(reg2_data),
@@ -70,6 +87,8 @@ module control(
         
         .aluop_o(id_aluop_o), .alusel_o(id_alusel_o),
         .reg1_o(id_reg1_o), .reg2_o(id_reg2_o),
+        .id_pc_o(id_ex_pc),
+        .imm_o(imm),
         .wd_o(id_wd_o), .wreg_o(id_wreg_o)       
     );
     
@@ -78,18 +97,26 @@ module control(
         .we(wb_wreg_i), .waddr(wb_wd_i),
         .wdata(wb_wdata_i), .re1(reg1_read),
         .raddr1(reg1_addr), .rdata1(reg1_data),
+        
         .re2(reg2_read), .raddr2(reg2_addr),
         .rdata2(reg2_data)
     );
+    
+    wire [`RegBus] ex_pc;
     
     id_ex id_ex0(
         .clk(clk), .rst(rst),
         .id_aluop(id_aluop_o), .id_alusel(id_alusel_o),
         .id_reg1(id_reg1_o), .id_reg2(id_reg2_o),
+        .imm_i(imm),
+        .id_pc(id_ex_pc),
         .id_wd(id_wd_o), .id_wreg(id_wreg_o),
         
+        .id_exflush_i(id_exflush),
+        
+        .ex_pc(ex_pc),
         .ex_aluop(ex_aluop_i), .ex_alusel(ex_alusel_i),
-        .ex_reg1(ex_reg1_i), .ex_reg2(ex_reg2_i),
+        .ex_reg1(ex_reg1_i), .ex_reg2(ex_reg2_i), .imm_o(imm_ex),
         .ex_wd(ex_wd_i), .ex_wreg(ex_wreg_i)
     );
     
@@ -97,7 +124,14 @@ module control(
         .rst(rst),
         .aluop_i(ex_aluop_i), .alusel_i(ex_alusel_i),
         .reg1_i(ex_reg1_i),  .reg2_i(ex_reg2_i),
+        .imm_i(imm_ex),
         .wd_i(ex_wd_i), .wreg_i(ex_wreg_i),
+       
+        .pc_i(ex_pc),
+        
+        .if_idflush_o(if_idflush), .id_exflush_o(id_exflush),
+        
+        .set_pc_o(set_pc), .pc_addr_o(set_pc_addr), 
         
         .wd_o(ex_wd_o), .wreg_o(ex_wreg_o),
         .wdata_o(ex_wdata_o)

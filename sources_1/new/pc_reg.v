@@ -7,6 +7,11 @@ module pc_reg(
     input wire set_pc_i,
     input wire[`InstAddrBus] set_pc_add_i,
     
+    // memctrl send here
+    input wire mem_busy,
+    
+    // send to memctrl
+    output reg pc_memreq,
     output reg[`InstAddrBus] pc,
     output reg ce
 );
@@ -23,7 +28,7 @@ module pc_reg(
             pc <= 32'h00000000;
         end else if (set_pc_i == `WriteEnable) begin
             pc <= set_pc_add_i;
-        end  else if (stall[0] == `NoStop) begin
+        end  else begin //if (stall[0] == `NoStop) begin
             pc <= pc + 4'h4;
         end
     end

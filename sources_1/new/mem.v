@@ -4,6 +4,8 @@ module mem(
     input wire wreg_i,
     input wire[`RegBus] wdata_i,
     
+    input wire mem_busy,
+    
     input wire[`RegBus] mem_w_data_i,
     input wire[`AluSelBus] mem_op_type_i,
     
