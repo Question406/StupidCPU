@@ -24,6 +24,9 @@ module ex(
     output reg if_idflush_o,
     output reg id_exflush_o,
     
+    // flushing the inst request in mem_ctrl
+    output reg inst_flush,
+    
     // data for mem write
     output reg[`RegBus] mem_w_data,
     //ATTENTION: maybe wire?
@@ -52,9 +55,11 @@ module ex(
             mem_op_type <= 6'b0;
             ex_forwarding_rd <= 0;
             ex_forwarding_data <= `ZeroWord;
+            inst_flush <= 0;
         end else begin
             if_idflush_o <= `InstNoFlush;
             id_exflush_o <=  `InstNoFlush;
+            inst_flush <= 0;
             set_pc_o <= `WriteDisable;
             ex_forwarding_rd <= 0;
             ex_forwarding_data <= `ZeroWord;
@@ -81,7 +86,8 @@ module ex(
                     set_pc_o <= `WriteEnable;
                     pc_addr_o <= pc_i + imm_i;
                     if_idflush_o <= `InstFlush;
-                    id_exflush_o <= `InstFlush;              
+                    id_exflush_o <= `InstFlush;
+                    inst_flush <= 1;              
                 end
                 `Inst_JALR : begin
                  // jumpto rs1 + imm_i
@@ -92,6 +98,7 @@ module ex(
                     pc_addr_o <=  reg1_i + imm_i;
                     if_idflush_o <= `InstFlush;
                     id_exflush_o <= `InstFlush;
+                    inst_flush <= 1;
                 end
                 `Inst_Branch : begin
                     set_pc_o <= `WriteEnable;
@@ -104,6 +111,7 @@ module ex(
                                     pc_addr_o <= pc_i + imm_i;
                                     if_idflush_o <= `InstFlush;
                                     id_exflush_o <= `InstFlush;
+                                    inst_flush <= 1;
                                 end
                         end
                         `BNE : begin
@@ -112,6 +120,7 @@ module ex(
                                     pc_addr_o <= pc_i + imm_i;
                                     if_idflush_o <= `InstFlush;
                                     id_exflush_o <= `InstFlush;
+                                    inst_flush <= 1;
                                 end
                         end
                         `BLT : begin
@@ -120,6 +129,7 @@ module ex(
                                     pc_addr_o <= pc_i + imm_i;
                                     if_idflush_o <= `InstFlush;
                                     id_exflush_o <= `InstFlush;
+                                    inst_flush <= 1;
                                 end
                         end
                         `BGE : begin
@@ -128,6 +138,7 @@ module ex(
                                     pc_addr_o <= pc_i + imm_i;
                                     if_idflush_o <= `InstFlush;
                                     id_exflush_o <= `InstFlush;
+                                    inst_flush <= 1;
                                 end
                         end
                         `BLTU : begin
@@ -136,6 +147,7 @@ module ex(
                                     pc_addr_o <= pc_i + imm_i;
                                     if_idflush_o <= `InstFlush;
                                     id_exflush_o <= `InstFlush;
+                                    inst_flush <= 1;
                                 end
                         end
                         `BGEU : begin

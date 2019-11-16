@@ -8,6 +8,8 @@ module memctrl(
     input wire if_req_in, // equal to lw
     input wire [`RegBus] addr_if_in,
     
+    input wire inst_flush,
+    
     // memory request from mem
     input wire mem_req_in,
     input wire [`RegBus] addr_mem_in,
@@ -178,5 +180,24 @@ always @ (posedge clk) begin
                     end
         end
     end    
+end
+
+always @(inst_flush) begin
+    if (inst_flush == 1) begin
+        if (busy && if_mem == 0) begin
+            if_mem <= 0;
+            output_data <= `ZeroWord;
+            addr_now <= `ZeroWord;
+            r_w <= 1'b0;
+            countdown <= 3'b000;
+            output_length <= 3'b000;
+            flag <= 1'b0;
+            mmem_data <= 8'b0;
+            get_inst <= 0;
+            output_pc <= `ZeroWord;
+            output_inst <= `ZeroWord;
+            busy <= 0;
+        end
+    end
 end
 endmodule
