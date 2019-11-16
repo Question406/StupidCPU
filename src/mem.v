@@ -40,6 +40,7 @@ module mem(
 
     assign need_wait = (mem_busy == 0 && (mem_op_type_i == `LB || mem_op_type_i == `LH || mem_op_type_i == `LW || 
                         mem_op_type_i == `LHU || mem_op_type_i == `LBU)) ? 1 : 0;
+                        
 
     always @(*) begin
         if (rst == `RstEnable) begin
