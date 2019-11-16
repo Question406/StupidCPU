@@ -96,6 +96,15 @@ always @ (posedge clk) begin
                         countdown <= 3'b011;
                         output_length <= 3'b011;
                     end
+                    `mem_LBU : begin
+                        r_w <= 1'b0;
+                        countdown <= 3'b010;
+                        output_length <= 3'b010;
+                    end
+                    `mem_LHU : begin
+                        countdown <= 3'b010;
+                        output_length <= 3'b010;
+                    end
                     `mem_SB : begin
                         r_w <= 1'b1;
                         countdown <= 3'b001;
@@ -150,7 +159,10 @@ always @ (posedge clk) begin
                             output_inst <= output_data ;
                             //output_data = (output_data >> ((6'b000100 - output_length) << 3));
                             r_w <= 0;
-                        end 
+                        end else begin
+                            ls_done <= 1;
+                            output_data <= (output_data >> ((6'b000100 - countdown) << 3));
+                        end
                     end
                     end else begin
                         if(r_w == 1'b0) begin

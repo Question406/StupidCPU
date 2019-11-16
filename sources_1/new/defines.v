@@ -104,11 +104,13 @@
 
 //for memctrl
 // 3'b000 means no mem op
-`define mem_LB 3'b001
-`define mem_LH 3'b010
-`define mem_LW 3'b011
-`define mem_SB 3'b100
-`define mem_SH 3'b101
-`define mem_SW 3'b110
+`define mem_LB 3'b000
+`define mem_LH 3'b001
+`define mem_LW 3'b010
+`define mem_LBU 3'b011
+`define mem_LHU 3'b100
+`define mem_SB 3'b101
+`define mem_SH 3'b110
+`define mem_SW 3'b111
 
 `endif
