@@ -26,10 +26,12 @@ module pc_reg(
     always @(posedge clk) begin
         if (ce == `ChipDisable) begin
             pc <= 32'h00000000;           
-        end else if (set_pc_i == `WriteEnable) begin
-            pc <= set_pc_add_i;
-        end else if (mem_busy == 0) begin
-            pc <= pc + 4'h4;
+        end else if (mem_busy != 1 && stall[0] != 1'b1) begin
+            if (set_pc_i == `WriteEnable) begin
+                pc <= set_pc_add_i;
+            end else begin
+                pc <= pc + 4'h4;
+            end
         end
     end
     

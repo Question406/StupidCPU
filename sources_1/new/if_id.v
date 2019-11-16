@@ -36,12 +36,13 @@ module if_id(
                 id_pc <= `ZeroWord;
                 id_inst <= `ZeroWord;
             end else begin
-                if (get_inst == 1'b1) begin
+                if (get_inst == 1'b1 && stall[1] == `NoStop) begin
                     id_pc <= if_pc;
                     id_inst <= if_inst;
+                end else begin
+                    id_pc <= `ZeroWord;
+                    id_inst <= `ZeroWord;
                 end
-                //id_pc <= if_pc;
-                //id_inst <= if_inst;
             end
         end
     
