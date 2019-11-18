@@ -28,7 +28,9 @@ module memctrl(
 //    output reg [`RegBus] output_pc,
 //    output reg [  `RegBus] output_data, // data get from main memory
 
-    output wire mem_busy, // tell if && mem whether could send request 
+    output wire mem_busy, // tell if && mem whether could send request
+    
+    output reg mem_take_if, 
     
     // connect to main memory
     input wire [7:0] data_get,
@@ -60,10 +62,11 @@ reg flag;
 
 always @ (posedge clk) begin
     //busy <= (busy || mem_req_in || if_req_in) ? 1 : 0;
-    busy <= (busy || if_req_in) ? 1 : 0;
+    busy <= (busy || if_req_in || mem_req_in) ? 1 : 0;
     
     if (rst) begin
         output_data <= `ZeroWord;
+        if_mem <= 0;
         addr_now <= `ZeroWord;
         r_w <= 1'b0;
         countdown <= 3'b000;
@@ -75,6 +78,7 @@ always @ (posedge clk) begin
         output_inst <= `ZeroWord;
         busy <= 0;
         ls_done <= 0;
+        mem_take_if <= 0;
     end
     else begin
         if (~busy) begin
@@ -135,6 +139,7 @@ always @ (posedge clk) begin
                     end
                 endcase 
             end else if (if_req_in) begin
+                mem_take_if <= 1;
                 if_mem <= 1'b0;
                 get_inst <= 1'b0;
                 output_pc <= addr_if_in;
@@ -150,6 +155,7 @@ always @ (posedge clk) begin
             end
             
         end else begin
+                if (if_mem == 0) mem_take_if <= 0;
                 if (countdown == 0) begin
                     busy <= 1'b0;
                     if (r_w == 1'b1) begin

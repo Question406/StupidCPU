@@ -70,6 +70,9 @@ module id(
             imm_o = `ZeroWord;
             last_load <= 1'b0;
         end else begin
+//            $display("id doing\n");
+//            $display(pc_i, " ", inst_i);
+        
             id_pc_o <= pc_i;
             aluop_o <= `Inst_NOP;
             alusel_o <= `NOP;

@@ -37,6 +37,9 @@ module if_id(
                 id_inst <= `ZeroWord;
             end else begin
                 if (get_inst == 1'b1 && stall[1] == `NoStop) begin
+                //FIXME:
+//                    $display("if_id pass\n");
+//                    $display(if_pc, " ", if_inst);
                     id_pc <= if_pc;
                     id_inst <= if_inst;
                 end else begin

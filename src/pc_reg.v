@@ -10,6 +10,9 @@ module pc_reg(
     // memctrl send here
     input wire mem_busy,
     
+    // when memctrl is doing 
+    input wire mem_take_if, 
+    
     // send to memctrl
     output wire pc_memreq,
     output reg[`InstAddrBus] pc,
@@ -26,7 +29,11 @@ module pc_reg(
     always @(posedge clk) begin
         if (ce == `ChipDisable) begin
             pc <= 32'h00000000;           
-        end else if (mem_busy != 1 && stall[0] != 1'b1) begin
+        end
+    end
+    
+    always @(mem_take_if) begin
+        if (mem_take_if == 1) begin
             pc <= pc + 4'h4;
         end
     end

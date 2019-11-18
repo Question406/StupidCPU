@@ -69,6 +69,10 @@ module ex(
             mem_w_data <= 32'b0;
             case (aluop_i) 
                 `Inst_LUI : begin
+                    if (`DEBUG) begin
+                        $display("LUI ", wd_i, " ", imm_i);
+                    end
+                    
                     wd_o <= wd_i;
                     wreg_o <= `WriteEnable;
                     wdata_o <= imm_i;
@@ -77,7 +81,10 @@ module ex(
                     wd_o <= wd_i;
                     wreg_o <= `WriteEnable;
                     wdata_o <= pc_i + imm_i;
-                    wreg_o <= `WriteEnable;
+                    
+                    if (`DEBUG) begin
+                        $display("AUIPC ", wd_i, " ", pc_i + imm_i);
+                    end
                 end
                 //TODO: some branch inst jump directly, don't need to determine until ex
                 `Inst_JAL : begin
@@ -89,7 +96,12 @@ module ex(
                     pc_addr_o <= pc_i + imm_i;
                     if_idflush_o <= `InstFlush;
                     id_exflush_o <= `InstFlush;
-                    inst_flush <= 1;              
+                    inst_flush <= 1;
+                    
+                    if (`DEBUG) begin
+                        $display("JAL ", wd_i, " ", pc_i + 3'b100);
+                        $display("jump to ", pc_i + imm_i);
+                    end            
                 end
                 `Inst_JALR : begin
                  // jumpto rs1 + imm_i
@@ -101,6 +113,11 @@ module ex(
                     if_idflush_o <= `InstFlush;
                     id_exflush_o <= `InstFlush;
                     inst_flush <= 1;
+                    
+                    if (`DEBUG) begin
+                        $display("JALR ", wd_i, " ", pc_i + 3'b100);
+                        $display("jump to ", reg1_i + imm_i);
+                    end
                 end
                 `Inst_Branch : begin
                     set_pc_o <= `WriteEnable;
@@ -114,6 +131,11 @@ module ex(
                                     if_idflush_o <= `InstFlush;
                                     id_exflush_o <= `InstFlush;
                                     inst_flush <= 1;
+                                    
+                                    if (`DEBUG) begin
+                                        $display("BEQ ");
+                                        $display("jump to ", pc_i + imm_i);
+                                    end
                                 end
                         end
                         `BNE : begin
@@ -123,6 +145,11 @@ module ex(
                                     if_idflush_o <= `InstFlush;
                                     id_exflush_o <= `InstFlush;
                                     inst_flush <= 1;
+                                    
+                                    if (`DEBUG) begin
+                                        $display("BNE ");
+                                        $display("jump to ", pc_i + imm_i);
+                                    end
                                 end
                         end
                         `BLT : begin
@@ -132,6 +159,11 @@ module ex(
                                     if_idflush_o <= `InstFlush;
                                     id_exflush_o <= `InstFlush;
                                     inst_flush <= 1;
+                                    
+                                    if (`DEBUG) begin
+                                        $display("BLT ");
+                                        $display("jump to ", pc_i + imm_i);
+                                    end
                                 end
                         end
                         `BGE : begin
@@ -141,6 +173,11 @@ module ex(
                                     if_idflush_o <= `InstFlush;
                                     id_exflush_o <= `InstFlush;
                                     inst_flush <= 1;
+                                    
+                                    if (`DEBUG) begin
+                                        $display("BGE ");
+                                        $display("jump to ", pc_i + imm_i);
+                                    end
                                 end
                         end
                         `BLTU : begin
@@ -150,6 +187,11 @@ module ex(
                                     if_idflush_o <= `InstFlush;
                                     id_exflush_o <= `InstFlush;
                                     inst_flush <= 1;
+                                    
+                                    if (`DEBUG) begin
+                                        $display("BLTU ");
+                                        $display("jump to ", pc_i + imm_i);
+                                    end
                                 end
                         end
                         `BGEU : begin
@@ -158,6 +200,11 @@ module ex(
                                     pc_addr_o <= pc_i + imm_i;
                                     if_idflush_o <= `InstFlush;
                                     id_exflush_o <= `InstFlush;
+                                    
+                                    if (`DEBUG) begin
+                                        $display("BGEU ");
+                                        $display("jump to ", pc_i + imm_i);
+                                    end
                                 end
                         end
                     endcase
@@ -166,14 +213,47 @@ module ex(
                     wreg_o <= `WriteEnable;
                     wdata_o <= reg1_i + imm_i;
                     mem_op_type <= alusel_i;
+                    
+                    if (`DEBUG) begin
+                        case (alusel_i)  
+                            `LB : begin
+                                $display("LB ", wd_i, " ", reg1_i+imm_i);    
+                            end
+                            `LH : begin
+                                $display("LH ", wd_i, " ", reg1_i+imm_i);
+                            end
+                            `LW : begin
+                                $display("LW ", wd_i, " ", reg1_i+imm_i);
+                            end
+                            `LBU : begin
+                                $display("LBU ", wd_i, " ", reg1_i+imm_i);
+                            end
+                            `LHU : begin
+                                $display("LHU ", wd_i, " ", reg1_i+imm_i);
+                            end
+                        endcase 
+                    end
                 end
                 `Inst_Save: begin
                     wreg_o <= `WriteEnable;
                     wdata_o <= reg1_i + imm_i;
                     mem_w_data <= reg2_i;
                     mem_op_type <= alusel_i;
+                    if (`DEBUG) begin
+                        case (alusel_i)  
+                            `SB : begin
+                                $display("SB ", reg1_i + imm_i, " ", reg2_i);    
+                            end
+                            `SH : begin
+                                $display("SH ", reg1_i + imm_i, " ", reg2_i);    
+                            end
+                            `SW : begin
+                                $display("SW ", reg1_i + imm_i, " ", reg2_i);
+                            end
+                        endcase 
+                    end
                 end
-                `InstClass_LogicOP : begin
+                `Inst_LogicOP : begin
                     wd_o <= wd_i;
                     wreg_o <= `WriteEnable;
                     case (alusel_i)
@@ -187,8 +267,11 @@ module ex(
                         `SRLI : wdata_o =  reg1_i >> imm_i[4:0];
                         `SRAI : wdata_o =  ($signed(reg1_i)) >>> imm_i[4:0];
                     endcase
+                    if (`DEBUG) begin
+                        $display("LogicOP ", wd_i, " ", wdata_o);
+                    end
                 end
-                `InstClass_ALUOp : begin
+                `Inst_ALU : begin
                     wd_o <= wd_i;
                     wreg_o <= `WriteEnable;
                     case (alusel_i)
@@ -203,6 +286,9 @@ module ex(
                         `OR : wdata_o = reg1_i | reg2_i;
                         `AND : wdata_o = reg1_i & reg2_i;
                     endcase
+                    if (`DEBUG) begin
+                        $display("ALU ", wd_i, " ", wdata_o);
+                    end
                 end
                 default : begin
                     wd_o <= 0;
