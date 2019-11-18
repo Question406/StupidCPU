@@ -59,8 +59,8 @@ module id(
     
     always @ (*) begin
         if (rst == `RstEnable) begin
-            aluop_o <= `EXE_NOP_OP;
-            alusel_o <= `EXE_RES_NOP;
+            aluop_o <= `Inst_NOP;
+            alusel_o <= `NOP;
             wd_o <= `NOPRegAddr;
             wreg_o <= `WriteDisable;
             reg1_read_o <= 1'b0;
@@ -71,8 +71,8 @@ module id(
             last_load <= 1'b0;
         end else begin
             id_pc_o <= pc_i;
-            aluop_o <= `EXE_NOP_OP;
-            alusel_o <= `EXE_RES_NOP;
+            aluop_o <= `Inst_NOP;
+            alusel_o <= `NOP;
             wreg_o <= `WriteDisable;
             reg1_read_o <= 1'b0;
             reg2_read_o <= 1'b0;
@@ -81,8 +81,6 @@ module id(
             reg1_o <= 32'b0;
             reg2_o <= 32'b0;
             imm_o = `ZeroWord;
-            aluop_o <= 3'b0;
-            alusel_o <= 5'b0;
             case (op_code)
                 `InstClass_LUI : begin
                     wreg_o <= `WriteEnable;
@@ -204,8 +202,8 @@ module id(
                 end
                 default: begin  
                     id_pc_o <= `ZeroWord;
-                    aluop_o <= `EXE_NOP_OP;
-                    alusel_o <= `EXE_RES_NOP;
+                    aluop_o <= `Inst_NOP;
+                    alusel_o <= `NOP;
                     wd_o <= `NOPRegAddr;
                     wreg_o <= `WriteDisable;
                     reg1_read_o <= 1'b0;

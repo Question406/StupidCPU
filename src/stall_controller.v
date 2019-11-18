@@ -10,10 +10,17 @@ module stall_controller(
 
 
 always @ (*) begin
-    if (rst == `ChipDisable) begin
-        stall = 5'b0;
+    if (rst == `RstEnable) begin
+        stall <= 6'b0;
+    end else begin
+        if (mem_req) begin
+            stall <= 6'b011000;
+        end else if (id_req) begin
+            stall <= 6'b011100;
+        end else begin
+            stall <= 6'b0;
+        end
     end
-    stall = 5'b0;
 end
 
 endmodule

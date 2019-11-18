@@ -28,8 +28,8 @@ module id_ex(
     always @ (posedge clk) begin
         if (rst == `RstEnable || id_exflush_i) begin
             ex_pc <= `ZeroWord;
-            ex_aluop <= `EXE_NOP_OP;
-            ex_alusel <= `EXE_RES_NOP;
+            ex_aluop <= `Inst_NOP;
+            ex_alusel <= `NOP;
             ex_reg1 <= `ZeroWord;
             ex_reg2 <= `ZeroWord;
             imm_o <= `ZeroWord;
@@ -37,8 +37,8 @@ module id_ex(
             ex_wreg <= `WriteDisable;       
         end else if (stall[2] == `Stop && stall[3] == `NoStop) begin
             ex_pc <= `ZeroWord;
-            ex_aluop <= `EXE_NOP_OP;
-            ex_alusel <= `EXE_RES_NOP;
+            ex_aluop <= `Inst_NOP;
+            ex_alusel <= `NOP;
             ex_reg1 <= `ZeroWord;
             ex_reg2 <= `ZeroWord;
             imm_o <= `ZeroWord;

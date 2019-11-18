@@ -24,13 +24,13 @@ module ex_mem(
             mem_wreg <= `WriteDisable;
             mem_wdata <= `ZeroWord;
             mmem_data_o <= `ZeroWord;
-            mem_op_type_o <= 6'b0;
+            mem_op_type_o <= `NOP;
         end else if (stall[3] == `Stop && stall[4] == `NoStop) begin
             mem_wd <= `NOPRegAddr;
             mem_wreg <= `WriteDisable;
             mem_wdata <= `ZeroWord;
             mmem_data_o <= `ZeroWord;
-            mem_op_type_o <= 6'b0;
+            mem_op_type_o <= `NOP;
         end else if (stall[3] == `NoStop) begin
             mem_wd <= ex_wd;
             mem_wreg <= ex_wreg;

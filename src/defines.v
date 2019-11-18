@@ -67,6 +67,7 @@
 `define Inst_Save 4'b0110
 `define Inst_ALU 4'b0111
 `define Inst_LogicOP 4'b1000
+`define Inst_NOP 4'b1001
 
 `define BEQ 6'b000000
 `define BNE 6'b000001
@@ -101,6 +102,8 @@
 `define SRA 6'b011110
 `define OR 6'b011111
 `define AND 6'b100000
+// empty inst, next op
+`define NOP 6'b111111
 
 //for memctrl
 // 3'b000 means no mem op

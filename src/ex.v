@@ -56,6 +56,7 @@ module ex(
             ex_forwarding_rd <= 0;
             ex_forwarding_data <= `ZeroWord;
             inst_flush <= 0;
+            mem_op_type <= `NOP;
         end else begin
             if_idflush_o <= `InstNoFlush;
             id_exflush_o <=  `InstNoFlush;
@@ -63,6 +64,7 @@ module ex(
             set_pc_o <= `WriteDisable;
             ex_forwarding_rd <= 0;
             ex_forwarding_data <= `ZeroWord;
+            mem_op_type <= alusel_i;
 
             mem_w_data <= 32'b0;
             case (aluop_i) 
@@ -211,7 +213,7 @@ module ex(
                     if_idflush_o <= 0;
                     id_exflush_o <= 0;
                     mem_w_data <= `ZeroWord;
-                    mem_op_type <= 6'b0;
+                    mem_op_type <= `NOP;
                     ex_forwarding_rd <= 0;
                     ex_forwarding_data <= `ZeroWord;
                 end

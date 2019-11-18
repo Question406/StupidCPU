@@ -30,9 +30,14 @@ module mem(
     output wire need_wait
 );
 
-    assign mem_stall_req = (mem_op_type_i == `LB || mem_op_type_i == `LH || mem_op_type_i == `LW || 
+    reg inst_pending;
+
+//    assign mem_stall_req = ((mem_busy == 0 && mem_op_type_i != `NOP) || mem_op_type_i == `LB || mem_op_type_i == `LH || mem_op_type_i == `LW || 
+//                            mem_op_type_i == `LHU || mem_op_type_i == `LBU || mem_op_type_i == `SB || 
+//                            mem_op_type_i == `SH || mem_op_type_i == `SW)? 1 : 0;
+    assign mem_stall_req = ((mem_op_type_i == `LB || mem_op_type_i == `LH || mem_op_type_i == `LW || 
                             mem_op_type_i == `LHU || mem_op_type_i == `LBU || mem_op_type_i == `SB || 
-                            mem_op_type_i == `SH || mem_op_type_i == `SW)? 1 : 0;
+                            mem_op_type_i == `SH || mem_op_type_i == `SW))? 1 : 0;
 
     assign mem_req = (mem_op_type_i == `LB || mem_op_type_i == `LH || mem_op_type_i == `LW || 
                         mem_op_type_i == `LHU || mem_op_type_i == `LBU || mem_op_type_i == `SB || 
@@ -47,6 +52,9 @@ module mem(
             wd_o <= `NOPRegAddr;
             wreg_o <= `WriteDisable;
             wdata_o <= `ZeroWord;
+            mem_req_addr <= `ZeroWord;
+            mem_req_data <= `ZeroWord;
+            mem_req_type <= 0;
         end else begin
             if (mem_busy == 0 && (mem_op_type_i == `LB || mem_op_type_i == `LH || mem_op_type_i == `LW || 
                 mem_op_type_i == `LHU || mem_op_type_i == `LBU || mem_op_type_i == `SB || 
@@ -91,12 +99,18 @@ module mem(
                         wd_o <= wd_i;
                         wreg_o <= wreg_i;
                         wdata_o <= wdata_i;
+                        mem_req_addr <= `ZeroWord;
+                        mem_req_data <= `ZeroWord;
+                        mem_req_type <= 0;
                     end
                 endcase
             end else begin
                 wd_o <= wd_i;
                 wreg_o <= wreg_i;
                 wdata_o <= wdata_i;
+                mem_req_addr <= `ZeroWord;
+                mem_req_data <= `ZeroWord;
+                mem_req_type <= 0;
             end
         end
     end
