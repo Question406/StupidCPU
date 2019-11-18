@@ -74,14 +74,18 @@ always @ (posedge clk) begin
         output_pc <= `ZeroWord;
         output_inst <= `ZeroWord;
         busy <= 0;
+        ls_done <= 0;
     end
     else begin
         if (~busy) begin
+            ls_done <= 0;
+            
             if (mem_req_in) begin
                 if_mem <= 1'b1;
                 busy <= 1'b1;
                 addr_now <= addr_mem_in;
-                flag <= 1'b1;                
+                flag <= 1'b1;           
+                data_writing <= data_mem_in; 
                 case (mem_req_type)
                     `mem_LB : begin
                         r_w <= 1'b0;
@@ -127,6 +131,7 @@ always @ (posedge clk) begin
                         addr_now <= 0;
                         countdown <= 0;
                         output_length <= 0;  
+                        data_writing <= `ZeroWord;
                     end
                 endcase 
             end else if (if_req_in) begin
@@ -151,6 +156,7 @@ always @ (posedge clk) begin
                         // finished write
                         r_w <= 0;
                         mmem_data <= `ZeroWord;
+                        ls_done <= 1;
                     end else begin
                         // finished read
                         if (if_mem == 0) begin

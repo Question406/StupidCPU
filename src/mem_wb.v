@@ -15,6 +15,8 @@ module mem_wb(
 
     input wire mmem_finished,
     input [`RegBus] mmem_data,
+    
+    output wire stop_stall,
 
     input wire [5:0] stall,
     
@@ -28,6 +30,8 @@ module mem_wb(
 );
 
     reg waiting_state;
+    
+    assign stop_stall = (waiting_state && mmem_finished) ? 1 : 0;
 
     always @ (posedge clk) begin
         if (rst == `RstEnable) begin
