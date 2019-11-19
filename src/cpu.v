@@ -1,7 +1,7 @@
 // RISCV32I CPU top module
 // port modification allowed for debugging purposes
 
-`include "D:\\ComputerSystem\\Stupid_CPU\\Stupid_CPU.srcs\\sources_1\\new\\defines.v"
+`include "I:\\518030910421\\src\\defines.v"
 //`include "defines.v"
 
 module cpu(

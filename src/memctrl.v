@@ -40,13 +40,6 @@ module memctrl(
     output reg [7:0] mmem_data // data needed to be stored in main memory
 );
 
-    localparam 
-        IF_0 = 4'b0001,
-        IF_1 = 4'b0010,
-        IF_2 = 4'b0011,
-        IF_3 = 4'b0100;
-        
-
 reg if_mem; // ATTENTION: 0 for if, 1 for mem
 reg busy;
 reg r_w; // read or write, 0 for read 1 for write

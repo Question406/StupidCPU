@@ -15,9 +15,9 @@ always @ (*) begin
         stall <= 6'b0;
     end else begin
         if (mem_req) begin
-            stall <= 6'b011000;
+            stall <= 6'b001110;
         end else if (id_req) begin
-            stall <= 6'b011100;
+            stall <= 6'b000010;
         end else begin
             stall <= 6'b0;
         end

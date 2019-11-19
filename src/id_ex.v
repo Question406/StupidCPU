@@ -36,15 +36,16 @@ module id_ex(
             ex_wd <= `NOPRegAddr;
             ex_wreg <= `WriteDisable;       
         end else if (stall[2] == `Stop && stall[3] == `NoStop) begin
-            ex_pc <= `ZeroWord;
-            ex_aluop <= `Inst_NOP;
-            ex_alusel <= `NOP;
-            ex_reg1 <= `ZeroWord;
-            ex_reg2 <= `ZeroWord;
-            imm_o <= `ZeroWord;
-            ex_wd <= `NOPRegAddr;
-            ex_wreg <= `WriteDisable;       
-        end else begin
+            // ex_pc <= `ZeroWord;
+            // ex_aluop <= `Inst_NOP;
+            // ex_alusel <= `NOP;
+            // ex_reg1 <= `ZeroWord;
+            // ex_reg2 <= `ZeroWord;
+            // imm_o <= `ZeroWord;
+            // ex_wd <= `NOPRegAddr;
+            // ex_wreg <= `WriteDisable;       
+        end 
+        else begin
             ex_pc <= id_pc;
             ex_aluop <= id_aluop;
             ex_alusel <= id_alusel;

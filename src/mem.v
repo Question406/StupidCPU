@@ -8,6 +8,7 @@ module mem(
     
     // whether can send request to mem_ctrl
     input wire mem_busy,
+    input wire mem_doing,
     
     input wire[`RegBus] mem_w_data_i,
     input wire[`AluSelBus] mem_op_type_i,
@@ -16,7 +17,7 @@ module mem(
     output wire mem_stall_req,
 
     // connect to mem_ctrl
-    output wire mem_req,
+    output reg mem_req,
     output reg[`RegBus] mem_req_addr,
     output reg[`RegBus] mem_req_data,
     output reg[3:0] mem_req_type,
@@ -40,7 +41,8 @@ module mem(
                             mem_op_type_i == `SH || mem_op_type_i == `SW))? 1 : 0;
 
     assign mem_req = (mem_op_type_i == `LB || mem_op_type_i == `LH || mem_op_type_i == `LW || 
-                        mem_op_type_i == `LHU || mem_op_type_i == `LBU || mem_op_type_i == `SB || 
+                        mem_op
+                        _type_i == `LHU || mem_op_type_i == `LBU || mem_op_type_i == `SB || 
                         mem_op_type_i == `SH || mem_op_type_i == `SW)? 1 : 0;
 
     assign need_wait = (mem_busy == 0 && (mem_op_type_i == `LB || mem_op_type_i == `LH || mem_op_type_i == `LW || 
@@ -56,7 +58,14 @@ module mem(
             mem_req_addr <= `ZeroWord;
             mem_req_data <= `ZeroWord;
             mem_req_type <= 0;
+            inst_pending <= 0;
         end else begin
+            if ((mem_op_type_i == `LB || mem_op_type_i == `LH || mem_op_type_i == `LW || 
+                mem_op_type_i == `LHU || mem_op_type_i == `LBU || mem_op_type_i == `SB || 
+                mem_op_type_i == `SH || mem_op_type_i == `SW)) begin
+                    mem_req <= 1;
+            end
+
             if (mem_busy == 0 && (mem_op_type_i == `LB || mem_op_type_i == `LH || mem_op_type_i == `LW || 
                 mem_op_type_i == `LHU || mem_op_type_i == `LBU || mem_op_type_i == `SB || 
                 mem_op_type_i == `SH || mem_op_type_i == `SW)) begin
@@ -64,37 +73,45 @@ module mem(
                     `LB : begin
                         mem_req_addr <= wdata_i;
                         mem_req_type <= `mem_LB;
+                        mem_req <= 1;
                     end
                     `LH : begin
                         mem_req_addr <= wdata_i;
                         mem_req_type <= `mem_LH;
+                        inst_pending <= 0;
                     end
                     `LW : begin
                         mem_req_addr <= wdata_i;
                         mem_req_type <= `mem_LW;
+                        inst_pending <= 0;
                     end
                     `LHU : begin
                         mem_req_addr <= wdata_i;
                         mem_req_type <= `mem_LHU;
+                        inst_pending <= 0;
                     end
                     `LBU : begin
                         mem_req_addr <= wdata_i;
                         mem_req_type <= `mem_LBU;
+                        inst_pending <= 0;
                     end
                     `SB : begin
                         mem_req_addr <= wdata_i;
                         mem_req_type <= `mem_SB;
                         mem_req_data <= mem_w_data_i;
+                        inst_pending <= 0;
                     end
                     `SH : begin
                         mem_req_addr <= wdata_i;
                         mem_req_type <= `mem_SH;
                         mem_req_data <= mem_w_data_i;
+                        inst_pending <= 0;
                     end
                     `SW : begin
                         mem_req_addr <= wdata_i;
                         mem_req_type <= `mem_SW;
                         mem_req_data <= mem_w_data_i;
+                        inst_pending <= 0;
                     end
                     default : begin
                         wd_o <= wd_i;

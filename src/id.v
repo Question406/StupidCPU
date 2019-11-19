@@ -123,12 +123,12 @@ module id(
                     aluop_o <= `Inst_Branch;
                     imm_o <= imm_B;
                     case (funct3)
-                        3'b000 : alusel_o = `BEQ;
-                        3'b001 : alusel_o = `BNE;
-                        3'b100 : alusel_o = `BLT;
-                        3'b101 : alusel_o = `BGE;
-                        3'b110 : alusel_o = `BLTU;
-                        3'b111 : alusel_o = `BGEU;
+                        3'b000 : alusel_o <= `BEQ;
+                        3'b001 : alusel_o <= `BNE;
+                        3'b100 : alusel_o <= `BLT;
+                        3'b101 : alusel_o <= `BGE;
+                        3'b110 : alusel_o <= `BLTU;
+                        3'b111 : alusel_o <= `BGEU;
                     endcase
                     
                     last_load <= 1'b0;
@@ -144,11 +144,11 @@ module id(
                     aluop_o <= `Inst_Load;
                     
                     case (funct3)
-                        3'b000 : alusel_o = `LB;
-                        3'b001 : alusel_o = `LH;
-                        3'b010 : alusel_o = `LW;
-                        (3'b100) : alusel_o = `LBU;
-                        3'b101 : alusel_o = `LHU;    
+                        3'b000 : alusel_o <= `LB;
+                        3'b001 : alusel_o <= `LH;
+                        3'b010 : alusel_o <= `LW;
+                        3'b100 : alusel_o <= `LBU;
+                        3'b101 : alusel_o <= `LHU;    
                     endcase
                 end
                 `InstClass_Save : begin
@@ -157,9 +157,9 @@ module id(
                     imm_o <= imm_S;
                     aluop_o <= `Inst_Save;
                     case (funct3)
-                        3'b000 : alusel_o = `SB;
-                        3'b001 : alusel_o = `SH;
-                        3'b010 : alusel_o = `SW;
+                        3'b000 : alusel_o <= `SB;
+                        3'b001 : alusel_o <= `SH;
+                        3'b010 : alusel_o <= `SW;
                     endcase
                     
                     last_load <= 1'b0;
@@ -171,15 +171,15 @@ module id(
                     imm_o <= imm_I;
                     aluop_o <= `Inst_LogicOP;
                     case (funct3)
-                        3'b000 : alusel_o = `ADDI;
-                        3'b010 : alusel_o = `SLTI;
-                        3'b011 : alusel_o = `SLTIU;
-                        3'b100 : alusel_o = `XORI;
-                        3'b110 : alusel_o = `ORI;
-                        3'b111 : alusel_o = `ANDI;
-                        3'b001 : alusel_o = `SLLI;
-                        3'b101 : alusel_o = `SRLI;
-                        3'b101 : alusel_o = `SRAI;
+                        3'b000 : alusel_o <= `ADDI;
+                        3'b010 : alusel_o <= `SLTI;
+                        3'b011 : alusel_o <= `SLTIU;
+                        3'b100 : alusel_o <= `XORI;
+                        3'b110 : alusel_o <= `ORI;
+                        3'b111 : alusel_o <= `ANDI;
+                        3'b001 : alusel_o <= `SLLI;
+                        3'b101 : alusel_o <= `SRLI;
+                        3'b101 : alusel_o <= `SRAI;
                     endcase
                     
                     last_load <= 1'b0;
@@ -191,14 +191,14 @@ module id(
                     wd_o <= rd;
                     aluop_o <= `InstClass_ALUOp;
                     case (funct3)
-                        3'b000 : alusel_o = (funct7 == 7'b0000000) ? `ADD : `SUB;
-                        3'b001 : alusel_o = `SLL;
-                        3'b010 : alusel_o = `SLT;
-                        3'b011 : alusel_o = `SLTU;
-                        3'b100 : alusel_o = `XOR;
-                        3'b101 : alusel_o = (funct7 == 7'b0000000) ? `SRL : `SRA;
-                        3'b110 : alusel_o = `OR;
-                        3'b111 : alusel_o = `AND;
+                        3'b000 : alusel_o <= (funct7 == 7'b0000000) ? `ADD : `SUB;
+                        3'b001 : alusel_o <= `SLL;
+                        3'b010 : alusel_o <= `SLT;
+                        3'b011 : alusel_o <= `SLTU;
+                        3'b100 : alusel_o <= `XOR;
+                        3'b101 : alusel_o <= (funct7 == 7'b0000000) ? `SRL : `SRA;
+                        3'b110 : alusel_o <= `OR;
+                        3'b111 : alusel_o <= `AND;
                     endcase
                     
                     last_load <= 1'b0;
