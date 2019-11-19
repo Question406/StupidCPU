@@ -79,7 +79,6 @@ wire if_req;
 wire [`InstAddrBus] addr_if;
 wire mem_busy;
 
-wire if_getinst;
 wire [`InstBus] if_inst;
 wire [`InstAddrBus] if_pc;
 
@@ -104,37 +103,35 @@ stall_controller stall_controller0(
     .mem_req(mem_stall_req) 
 );
     
-wire ls_done;
-wire [`RegBus] output_data;
+wire [7:0] output_data;
 
 wire mmem_req;
 wire [`RegBus] addr_mem;
-wire [`RegBus] data_mem;
+wire [7:0] data_mem;
 wire [3:0] mem_req_type;
 
 wire mem_take_if;
 
+wire [7:0] mem_inst_factor;
+
+wire get_inst;
+wire [`RegBus] if_req_addr;
+wire mem_req_r_w;
+
 memctrl memctrl0(
     .clk(clk_in), .rst(rst_in),
-    .if_req_in(if_req), .addr_if_in(addr_if),
+    .if_req_in(if_req), .addr_if_in(if_req_addr),
 
     .mem_req_in(mmem_req), 
     .addr_mem_in(addr_mem), 
     .data_mem_in(data_mem), 
-    .mem_req_type(mem_req_type), 
+    .mem_req_r_w(mem_req_r_w),
     
-    .data_get(mem_din),
-    
-    .inst_flush(inst_flush),
-    
-    .mmem_r_w(mem_wr), .mmem_addr(mem_a), .mmem_data(mem_dout),
-    
-    .mem_busy(mem_busy),
-    .mem_take_if(mem_take_if),
+    .data_get(mem_din), .mmem_r_w(mem_wr), .mmem_addr(mem_a), .mmem_data(mem_dout),
 
-    .ls_done(ls_done), .output_data(output_data),
-    
-    .get_inst(if_getinst), .output_pc(if_pc), .output_inst(if_inst)
+    .output_data(output_data),
+
+    .inst_factor_o(mem_inst_factor)
 );
 
 pc_reg pc_reg0(
@@ -142,10 +139,11 @@ pc_reg pc_reg0(
 
     .stall(stall),
     
-    .mem_busy(mem_busy),
-    .mem_take_if(mem_take_if),
+    .mem_inst_factor_i(mem_inst_factor),
     
-    .pc_memreq(if_req), .pc(addr_if),
+    .pc_memreq(if_req), .if_addr_req_o(if_req_addr),
+    
+    .get_inst(get_inst), .if_pc_o(addr_if), .if_inst_o(if_inst),
 
     .set_pc_i(set_pc), .set_pc_add_i(set_pc_addr)
 );
@@ -158,9 +156,9 @@ if_id if_id0(
     .clk(clk_in), .rst(rst_in),
 
     .stall(stall),
-    
-    .get_inst(if_getinst), .if_pc(if_pc), .if_inst(if_inst),
-    
+
+    .get_inst(get_inst), .if_pc(addr_if), .if_inst(if_inst),
+
     .id_pc(id_pc_i), .if_idflush_i(if_idflush),
     .id_inst(id_inst_i)
 );
@@ -271,15 +269,13 @@ wire [`RegBus] ex_pc;
         .wd_i(mem_wd_i), .wreg_i(mem_wreg_i),
         .wdata_i(mem_wdata_i),
 
-        .mem_busy(mem_busy),
+        .mem_w_data_i(to_mem_data), .mem_op_type_i(mem_op),
+
+        .memctrl_data_in(output_data),
 
         .mem_stall_req(mem_stall_req),
 
-        .mem_req(mmem_req), .mem_req_addr(addr_mem), .mem_req_data(data_mem), .mem_req_type(mem_req_type),
-
-        .need_wait(need_wait),
-
-        .mem_w_data_i(to_mem_data), .mem_op_type_i(mem_op),
+        .mem_req(mmem_req), .mem_req_addr(addr_mem), .mem_req_data(data_mem), .mem_r_w(mem_req_r_w),
 
         .wd_o(mem_wd_o), .wreg_o(mem_wreg_o),
         .wdata_o(mem_wdata_o)
@@ -289,13 +285,8 @@ wire [`RegBus] ex_pc;
         .clk(clk_in),  .rst(rst_in),
 
         .stall(stall),
-
-        .mmem_finished(ls_done),
-        .mmem_data(output_data),
         
         .stop_stall(stop_stall),
-
-        .need_wait(need_wait),
 
         .mem_wd(mem_wd_o), .mem_wreg(mem_wreg_o),
         .mem_wdata(mem_wdata_o),

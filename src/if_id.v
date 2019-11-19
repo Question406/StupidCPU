@@ -4,7 +4,7 @@ module if_id(
     input wire clk,
     input wire rst,
     
-    // connect to mem
+    // connect to pc_reg
     input wire get_inst,
     input wire[`InstAddrBus] if_pc,
     input wire[`InstBus] if_inst,
@@ -36,12 +36,15 @@ module if_id(
                 id_pc <= `ZeroWord;
                 id_inst <= `ZeroWord;
             end else begin
-                if (get_inst == 1'b1 && stall[1] == `NoStop) begin
+                if (get_inst && stall[1] == `NoStop) begin
                 //FIXME:
-//                    $display("if_id pass\n");
-//                    $display(if_pc, " ", if_inst);
+                    $display("if_id pass");
+                    $display(if_pc, " ", if_inst);
                     id_pc <= if_pc;
                     id_inst <= if_inst;
+                end else begin
+                    id_pc <= `ZeroWord;
+                    id_inst <= `ZeroWord;
                 end
             end
         end

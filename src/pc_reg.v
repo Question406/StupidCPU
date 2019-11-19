@@ -9,49 +9,94 @@ module pc_reg(
     
     // memctrl send here
     input wire mem_busy,
-    
-    // when memctrl is doing 
-    input wire mem_take_if, 
+    input wire [7:0] mem_inst_factor_i,
+
+    // MEM interrupts IF
+    //input wire mem_interrupt,
     
     // send to memctrl
-    output wire pc_memreq,
-    output reg[`InstAddrBus] pc,
-    output reg ce
+    // IF always request something
+    output reg pc_memreq,
+    output reg[`InstAddrBus] if_addr_req_o,
+
+    // send to ID
+    output wire get_inst,
+    output reg[`InstAddrBus] if_pc_o,
+    output reg[`RegBus] if_inst_o
 );
-    always @(posedge clk) begin
-        if (rst == `RstEnable) begin
-            ce <= `ChipDisable;
-        end else begin
-            ce <= `ChipEnable;
-        end
-    end
-    
-    always @(posedge clk) begin
-        if (ce == `ChipDisable) begin
-            pc <= 32'h00000000;           
-        end
-    end
-    
-    always @(mem_take_if) begin
-        if (mem_take_if == 1) begin
-            pc <= pc + 4'h4;
-        end
-    end
-    
+
+    reg [3:0] state;
+    reg [3:0] last_state; //state before 
+
+    assign get_inst = (state == 4'b0000) ? 1 : 0;
+
     always @(set_pc_i) begin
         if (set_pc_i == `WriteEnable) begin
-            pc <= set_pc_add_i;
+            if_pc_o <= set_pc_add_i;
+            if_addr_req_o <= set_pc_add_i;
+            if_inst_o <= `ZeroWord;
+            state <= 4'b0000;
         end
     end
-    
-    assign pc_memreq = (mem_busy || ce == `ChipDisable) ? 0 : 1; 
-    
-//    always @(posedge clk) begin
-//        if (mem_busy == 0) begin
-//            pc_memreq <= 1;
-//        end else begin
-        
-//        end
-//    end
+
+    always @(posedge clk) begin
+        if (rst == `RstEnable) begin
+            if_pc_o <= 0;
+            state <= 4'b0000;
+            pc_memreq <= 0;
+            if_inst_o <= `ZeroWord;
+            if_addr_req_o <= `ZeroWord;
+        end else begin
+            case (state)
+                4'b0000: begin
+                    if (!stall[0]) begin
+                        if_pc_o <= if_addr_req_o;
+                        //if_addr_req_o <= if_pc_o;
+                        state <= 4'b0001;
+                        pc_memreq <= 1;
+                    end else begin
+                        state <= 4'b0010;
+                    end
+                end
+                4'b0001 : begin
+                    if (!stall[0]) begin
+                        state <= 4'b0010;
+                        if_addr_req_o <= if_addr_req_o + 1;
+                    end else begin
+                        state <= 4'b0101;
+                        if_addr_req_o <= if_pc_o;
+                    end
+                end
+                4'b0010: begin
+                    state <= 4'b0011;
+                    if_addr_req_o <= if_addr_req_o + 1;
+                    if_inst_o = if_inst_o >> 8;
+                    if_inst_o[31:24] = mem_inst_factor_i;
+                end
+                4'b0011: begin
+                    // if_addr_req_o <= if_pc_o + 32'h2;
+                    state <= 4'b0100;
+                    if_addr_req_o <= if_addr_req_o + 1;
+                    if_inst_o = if_inst_o >> 8;
+                    if_inst_o[31:24] = mem_inst_factor_i;
+                end
+                4'b0100: begin
+                    // if_addr_req_o <= if_pc_o + 32'h3;
+                    state <= 4'b0101; 
+                    pc_memreq <= 0;
+                    if_addr_req_o <= if_addr_req_o + 1;
+                    if_inst_o = if_inst_o >> 8;
+                    if_inst_o[31:24] = mem_inst_factor_i;
+                end
+                4'b0101: begin
+                    state = 4'b0000;
+                    if_inst_o = if_inst_o >> 8;
+                    if_inst_o[31:24] = mem_inst_factor_i;
+                end
+                4'b0110: begin
+                end
+            endcase
+        end
+    end
 
 endmodule
