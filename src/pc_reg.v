@@ -54,46 +54,79 @@ module pc_reg(
                         //if_addr_req_o <= if_pc_o;
                         state <= 4'b0001;
                         pc_memreq <= 1;
-                    end else begin
-                        state <= 4'b0010;
                     end
                 end
                 4'b0001 : begin
                     if (!stall[0]) begin
                         state <= 4'b0010;
                         if_addr_req_o <= if_addr_req_o + 1;
-                    end else begin
-                        state <= 4'b0101;
+                    end else if (stall[0]) begin
+                        state <= 4'b0110;
                         if_addr_req_o <= if_pc_o;
+                        last_state <= 4'b0001;
+                        pc_memreq <= 0;
                     end
                 end
                 4'b0010: begin
-                    state <= 4'b0011;
-                    if_addr_req_o <= if_addr_req_o + 1;
                     if_inst_o = if_inst_o >> 8;
                     if_inst_o[31:24] = mem_inst_factor_i;
+                    if (!stall[0]) begin
+                        state <= 4'b0011;
+                        if_addr_req_o <= if_addr_req_o + 1;
+                    end else if (stall[0]) begin
+                        state <= 4'b0110;
+                        if_addr_req_o <= if_pc_o + 1;
+                        last_state <= 4'b0010;
+                        pc_memreq <= 0;
+                    end
                 end
                 4'b0011: begin
                     // if_addr_req_o <= if_pc_o + 32'h2;
-                    state <= 4'b0100;
-                    if_addr_req_o <= if_addr_req_o + 1;
                     if_inst_o = if_inst_o >> 8;
                     if_inst_o[31:24] = mem_inst_factor_i;
+                    if (!stall[0]) begin
+                        state <= 4'b0100;
+                        if_addr_req_o <= if_addr_req_o + 1;
+                    end else if (stall[0]) begin
+                        state <= 4'b0100;
+                        last_state <= 4'b0011;
+                        if_addr_req_o <= if_pc_o + 2;
+                        pc_memreq <= 0;
+                    end 
                 end
                 4'b0100: begin
                     // if_addr_req_o <= if_pc_o + 32'h3;
-                    state <= 4'b0101; 
-                    pc_memreq <= 0;
-                    if_addr_req_o <= if_addr_req_o + 1;
                     if_inst_o = if_inst_o >> 8;
                     if_inst_o[31:24] = mem_inst_factor_i;
+                    if (!stall[0]) begin
+                        state <= 4'b0101; 
+                        pc_memreq <= 0;
+                        if_addr_req_o <= if_addr_req_o + 1;
+                    end else if (stall[0]) begin
+                        state <= 4'b0110;
+                        last_state <= 4'b0101;
+                        if_addr_req_o <= if_pc_o + 3;
+                    end
                 end
+
                 4'b0101: begin
                     state = 4'b0000;
                     if_inst_o = if_inst_o >> 8;
                     if_inst_o[31:24] = mem_inst_factor_i;
                 end
+
+                // interupt by mem
                 4'b0110: begin
+                    if (!stall[0]) begin
+                        state <= 4'b0111;
+                        pc_memreq <= 1;
+                    end 
+                end
+                4'b0111: begin
+                    if (!stall[0]) begin
+                        state <= last_state;
+                        if_addr_req_o <= if_addr_req_o + 1;
+                    end
                 end
             endcase
         end
