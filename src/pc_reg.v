@@ -63,7 +63,7 @@ module pc_reg(
                     end else if (stall[0]) begin
                         state <= 4'b0110;
                         if_addr_req_o <= if_pc_o;
-                        last_state <= 4'b0001;
+                        last_state <= 4'b0010;
                         pc_memreq <= 0;
                     end
                 end
@@ -76,7 +76,7 @@ module pc_reg(
                     end else if (stall[0]) begin
                         state <= 4'b0110;
                         if_addr_req_o <= if_pc_o + 1;
-                        last_state <= 4'b0010;
+                        last_state <= 4'b0011;
                         pc_memreq <= 0;
                     end
                 end
@@ -88,8 +88,8 @@ module pc_reg(
                         state <= 4'b0100;
                         if_addr_req_o <= if_addr_req_o + 1;
                     end else if (stall[0]) begin
-                        state <= 4'b0100;
-                        last_state <= 4'b0011;
+                        state <= 4'b0110;
+                        last_state <= 4'b0100;
                         if_addr_req_o <= if_pc_o + 2;
                         pc_memreq <= 0;
                     end 

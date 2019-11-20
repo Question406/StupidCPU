@@ -265,6 +265,7 @@ wire [`RegBus] ex_pc;
     wire need_wait;
 
     mem mem0(
+        .clk(clk_in),
         .rst(rst_in),
         .wd_i(mem_wd_i), .wreg_i(mem_wreg_i),
         .wdata_i(mem_wdata_i),

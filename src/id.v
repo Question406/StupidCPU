@@ -57,7 +57,7 @@ module id(
     
     assign id_stall_req = (last_load & (reg1_o || reg2_o)) ? 1 : 0; 
     
-    always @ (*) begin
+    always @ (inst_i) begin
         if (rst == `RstEnable) begin
             aluop_o <= `Inst_NOP;
             alusel_o <= `NOP;
@@ -214,7 +214,6 @@ module id(
                     reg1_addr_o <= `NOPRegAddr;
                     reg2_addr_o <= `NOPRegAddr;
                     imm_o = `ZeroWord;
-                    
                     last_load <= 1'b0;
                 end
             endcase

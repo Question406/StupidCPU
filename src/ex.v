@@ -235,7 +235,7 @@ module ex(
                     end
                 end
                 `Inst_Save: begin
-                    wreg_o <= `WriteEnable;
+                    wreg_o <= `WriteDisable;
                     wdata_o <= reg1_i + imm_i;
                     mem_w_data <= reg2_i;
                     mem_op_type <= alusel_i;

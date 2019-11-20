@@ -36,14 +36,14 @@ module mem_wb(
             mem_w_data_o <= `ZeroWord;
             memop_type_o <= 6'b0;
         end 
-        else if (stall[4] == `Stop && stall[5] == `NoStop) begin
+        else if (stall[3] == `Stop && stall[4] == `NoStop) begin
                 wb_wd <= `NOPRegAddr;
                 wb_wreg <= `WriteDisable;
                 wb_wdata <= `ZeroWord;
                 mem_w_data_o <= `ZeroWord;
                 memop_type_o <= 6'b0;
             end 
-            else if (stall [4] == `NoStop) begin
+            else if (stall[3] == `NoStop) begin
                 wb_wd <= mem_wd;
                 wb_wreg <= mem_wreg;
                 wb_wdata <= mem_wdata;

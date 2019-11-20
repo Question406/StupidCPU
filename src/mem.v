@@ -1,6 +1,7 @@
 `include "defines.v"
 
 module mem(
+    input wire clk,
     input wire rst,
     input wire[`RegAddrBus] wd_i,
     input wire wreg_i,
@@ -55,7 +56,7 @@ reg [`RegBus] read_data;
         end
     end
 
-    always @(*) begin
+    always @(posedge clk) begin
         if (rst == `RstEnable) begin
             wd_o <= `NOPRegAddr;
             wreg_o <= `WriteDisable;
@@ -79,19 +80,20 @@ reg [`RegBus] read_data;
                     end
                 end
 
-                4'b0001 : begin
-                    state = 4'b0010;
+                4'b0001 : begin                    
                     if (mem_op_type_i == `LH || mem_op_type_i == `LW || 
                         mem_op_type_i == `LHU || mem_op_type_i == `LBU) begin
                             mem_req <= 1;
                             mem_r_w <= 0;
                             mem_req_addr <= mem_req_addr + 1;
+                            state <= 4'b0010;
                     end else if (mem_op_type_i == `SH || mem_op_type_i == `SW) begin
                             mem_r_w <= 1;
                             mem_req_data <= mem_w_data_i[15:8];
                             mem_req_addr <= mem_req_addr + 1;
+                            state <= 4'b0010;
                     end else if (mem_op_type_i == `SB) begin
-                        working <= 0;
+                        state<= 4'b0110;
                         mem_stall_req <= 0;
                     end
                 end
@@ -99,7 +101,7 @@ reg [`RegBus] read_data;
                 4'b0010 : begin
                     if (mem_op_type_i == `LB) begin
                         mem_req <= 0;
-                        working <= 0;
+                        state<= 4'b0110;
                         mem_stall_req <= 0;
                         wreg_o <= wreg_i;
                         wd_o <= wd_i;
@@ -107,12 +109,11 @@ reg [`RegBus] read_data;
                         mem_stall_req <= 0;
                     end else if (mem_op_type_i == `LBU) begin
                         mem_req <= 0;
-                        working <= 0;
+                        state<= 4'b0110;
                         mem_stall_req <= 0;
                         wreg_o <= wreg_i;
                         wd_o <= wd_i;
                         wdata_o <= {24'b0 , memctrl_data_in};
-                        mem_stall_req <= 0;
                     end else begin
                         if (mem_op_type_i == `LH || mem_op_type_i == `LHU || mem_op_type_i == `LW) begin
                             state <= 4'b0011;
@@ -137,22 +138,22 @@ reg [`RegBus] read_data;
                             mem_req_addr <= mem_req_addr + 1;
                             mem_req_data <= mem_w_data_i[23:16];
                         end else if (mem_op_type_i == `SH) begin
-                                working <= 0;
-                                mem_stall_req <= 0;
+                            state<= 4'b0110;
+                            mem_stall_req <= 0;
                         end
                     end
                 end
                 4'b0011 : begin
                     if (mem_op_type_i == `LH) begin
                         mem_req <= 0;
-                        working <= 0;
+                        state<= 4'b0110;
                         mem_stall_req <= 0;
                         wreg_o <= wreg_i;
                         wd_o <= wd_i;
                         wdata_o <= {{16{read_data[15]}}, read_data[15:8], memctrl_data_in};
                     end else if (mem_op_type_i == `LHU) begin
                         mem_req <= 0;
-                        working <= 0;                        
+                        state<= 4'b0110;                        
                         mem_stall_req <= 0;
                         wreg_o <= wreg_i;
                         wd_o <= wd_i;
@@ -170,7 +171,7 @@ reg [`RegBus] read_data;
                             mem_r_w <= 1;
                             mem_req_addr <= mem_req_addr + 1;
                             mem_req_data <= mem_w_data_i[31:24];
-                            working <= 0;
+                            state<= 4'b0110;
                             mem_stall_req <= 0;
                         end
                     end
@@ -187,7 +188,7 @@ reg [`RegBus] read_data;
 
                 4'b0101 : begin
                     if (mem_op_type_i == `LW) begin
-                        working <= 0;
+                        state<= 4'b0110;
                         mem_stall_req <= 0;
                         mem_req <= 0;
                         mem_r_w <= 0;
@@ -195,6 +196,14 @@ reg [`RegBus] read_data;
                         wd_o <= wd_i;
                         wdata_o <= {read_data[31:8], memctrl_data_in};
                     end
+                end
+
+                // anything done state, need one cycle to flush current inst
+                4'b0110 : begin
+                    working <= 0;
+                    state <= 4'b0000;
+                    mem_req <= 0;
+                    mem_r_w <= 0;
                 end
             endcase
         end else begin
