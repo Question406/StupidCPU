@@ -54,10 +54,10 @@ module id(
     
     // tell whthether data hazard 
     reg last_load;
+
+    assign id_stall_req = 0;
     
-    assign id_stall_req = (last_load & (reg1_o || reg2_o)) ? 1 : 0; 
-    
-    always @ (inst_i) begin
+    always @ (*) begin
         if (rst == `RstEnable) begin
             aluop_o <= `Inst_NOP;
             alusel_o <= `NOP;
@@ -72,7 +72,6 @@ module id(
         end else begin
 //            $display("id doing\n");
 //            $display(pc_i, " ", inst_i);
-        
             id_pc_o <= pc_i;
             aluop_o <= `Inst_NOP;
             alusel_o <= `NOP;
@@ -120,6 +119,8 @@ module id(
                     last_load <= 1'b0;
                 end
                 `InstClass_Branch : begin
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b1;
                     aluop_o <= `Inst_Branch;
                     imm_o <= imm_B;
                     case (funct3)
@@ -189,7 +190,7 @@ module id(
                     reg2_read_o <= 1'b1;
                     wreg_o <= `WriteEnable;
                     wd_o <= rd;
-                    aluop_o <= `InstClass_ALUOp;
+                    aluop_o <= `Inst_ALU;
                     case (funct3)
                         3'b000 : alusel_o <= (funct7 == 7'b0000000) ? `ADD : `SUB;
                         3'b001 : alusel_o <= `SLL;

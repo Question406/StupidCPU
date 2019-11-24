@@ -59,7 +59,7 @@ always @ (*) begin
     end
 end
 
-always @(data_get) begin
+always @(*) begin
     if (if_mem == 1) begin
         output_data <= data_get;
     end else if (if_mem == 0) begin

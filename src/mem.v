@@ -56,6 +56,18 @@ reg [`RegBus] read_data;
         end
     end
 
+    always @(*) begin
+        if (rst == `RstEnable) begin
+            wd_o <= 0;
+            wreg_o <= `WriteDisable;
+            wdata_o <= `ZeroWord;
+        end else begin
+            wd_o <= wd_i;
+            wreg_o <= wreg_i;
+            wdata_o <= wdata_i;
+        end
+    end 
+
     always @(posedge clk) begin
         if (rst == `RstEnable) begin
             wd_o <= `NOPRegAddr;
@@ -120,17 +132,19 @@ reg [`RegBus] read_data;
                             mem_req <= 1;
                             mem_r_w <= 0;
                             mem_req_addr <= mem_req_addr + 1;
-                            case (mem_op_type_i)
-                                `LH : begin
-                                    read_data[15:8] <= memctrl_data_in;
-                                end
-                                `LHU : begin
-                                    read_data[15:8] <= memctrl_data_in;
-                                end
-                                `LW : begin
-                                    read_data[31:24] <= memctrl_data_in;
-                                end
-                            endcase 
+                            // case (mem_op_type_i)
+                            //     `LH : begin
+                            //         read_data[7:0] <= memctrl_data_in;
+                            //     end
+                            //     `LHU : begin
+                            //         read_data[15:8] <= memctrl_data_in;
+                            //     end
+                            //     `LW : begin
+                            //         read_data[31:24] <= memctrl_data_in;
+                            //     end
+                            // endcase 
+                            read_data = read_data >> 8;
+                            read_data[31:24] = memctrl_data_in;
                         end else if (mem_op_type_i == `SW) begin
                             state <= 4'b0011;
                             mem_req <= 1;
@@ -150,21 +164,23 @@ reg [`RegBus] read_data;
                         mem_stall_req <= 0;
                         wreg_o <= wreg_i;
                         wd_o <= wd_i;
-                        wdata_o <= {{16{read_data[15]}}, read_data[15:8], memctrl_data_in};
+                        wdata_o <= {{16{memctrl_data_in[7]}}, memctrl_data_in, read_data[31:24]};
                     end else if (mem_op_type_i == `LHU) begin
                         mem_req <= 0;
                         state<= 4'b0110;                        
                         mem_stall_req <= 0;
                         wreg_o <= wreg_i;
                         wd_o <= wd_i;
-                        wdata_o <= {16'b0, read_data[15:8], memctrl_data_in};
+                        wdata_o <= {16'b0, memctrl_data_in, read_data[31:24]};
                     end else begin
                         if (mem_op_type_i == `LW) begin
                             state <= 4'b0100;
                             mem_req <= 1;
                             mem_r_w <= 0;
                             mem_req_addr <= mem_req_addr + 1;
-                            read_data[23:16] <= memctrl_data_in;
+                            //read_data[23:16] <= memctrl_data_in;
+                            read_data = read_data >> 8;
+                            read_data[31:24] = memctrl_data_in;
                         end else if (mem_op_type_i == `SW) begin
                             state <= 4'b0100;
                             mem_req <= 1;
@@ -182,7 +198,9 @@ reg [`RegBus] read_data;
                         mem_req <= 1;
                         mem_r_w <= 0;
                         mem_req_addr <= mem_req_addr + 1;
-                        read_data[15:8] <= memctrl_data_in;
+                        //read_data[15:8] <= memctrl_data_in;
+                        read_data = read_data >> 8;
+                        read_data[31:24] = memctrl_data_in;
                     end 
                 end
 
@@ -194,16 +212,22 @@ reg [`RegBus] read_data;
                         mem_r_w <= 0;
                         wreg_o <= wreg_i;
                         wd_o <= wd_i;
-                        wdata_o <= {read_data[31:8], memctrl_data_in};
+                        wdata_o <= {memctrl_data_in, read_data[31:8]};
+                        // if (`DEBUG) begin
+                        //     $display("read ", wdata_o);
+                        // end
                     end
                 end
 
                 // anything done state, need one cycle to flush current inst
                 4'b0110 : begin
-                    working <= 0;
-                    state <= 4'b0000;
+                    state <= 4'b0111;
                     mem_req <= 0;
                     mem_r_w <= 0;
+                end
+                4'b0111 : begin
+                    working <= 0;
+                    state <= 4'b0000;
                 end
             endcase
         end else begin
