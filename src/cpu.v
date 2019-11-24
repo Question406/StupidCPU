@@ -134,6 +134,14 @@ memctrl memctrl0(
     .inst_factor_o(mem_inst_factor)
 );
 
+// for cache
+wire cache_enable;
+wire [`InstAddrBus] inst_cache_addr;
+wire [`InstBus] inst_cache;
+
+wire inst_hit;
+wire [`InstBus] inst_hit_cache;
+
 pc_reg pc_reg0(
     .clk(clk_in), .rst(rst_in),
 
@@ -146,6 +154,13 @@ pc_reg pc_reg0(
     .get_inst(get_inst), .if_pc_o(addr_if), .if_inst_o(if_inst),
 
     .set_pc_i(set_pc), .set_pc_add_i(set_pc_addr)
+);
+
+inst_cache inst_cache0(
+    .rst(rst_in),
+    .cache_enable(cache_enable), .inst_addr(inst_cache_addr), .inst_cache_i(inst_cache),
+
+    .inst_hit_o(inst_hit), .inst_cache_o(inst_hit_cache)
 );
 
 

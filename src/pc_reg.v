@@ -22,7 +22,18 @@ module pc_reg(
     // send to ID
     output wire get_inst,
     output reg[`InstAddrBus] if_pc_o,
-    output reg[`RegBus] if_inst_o
+    output reg[`RegBus] if_inst_o,
+
+    // send to inst_cache
+    // cache an inst
+    output reg cache_enable,
+    output reg[`InstAddrBus] inst_cache_addr_o,
+    output reg[`InstBus] inst_cache_o,
+    
+    // query cache
+    output wire cache_query,
+    output reg[`InstAddrBus] query_addr
+    
 );
 
     reg [3:0] state;
@@ -54,9 +65,12 @@ module pc_reg(
                         //if_addr_req_o <= if_pc_o;
                         state <= 4'b0001;
                         pc_memreq <= 1;
+                        //cache_query <= 1;
+                        inst_cache_addr_o <= if_addr_req_o;
                     end
                 end
                 4'b0001 : begin
+                    cache_enable <= 0;
                     if (!stall[0]) begin
                         state <= 4'b0010;
                         if_addr_req_o <= if_addr_req_o + 1;
@@ -113,6 +127,7 @@ module pc_reg(
                     state = 4'b0000;
                     if_inst_o = if_inst_o >> 8;
                     if_inst_o[31:24] = mem_inst_factor_i;
+
                 end
 
                 // interupt by mem
