@@ -32,14 +32,19 @@ module pc_reg(
     
     // query cache
     output wire cache_query,
-    output reg[`InstAddrBus] query_addr
-    
+    output reg[`InstAddrBus] query_addr,
+
+    // inst_cache return inst
+    input wire inst_hit,
+    input wire [`InstBus] cache_inst_i
 );
 
     reg [3:0] state;
     reg [3:0] last_state; //state before 
 
-    assign get_inst = (state == 4'b0000) ? 1 : 0;
+    assign get_inst = (state == 4'b0000 || inst_hit) ? 1 : 0;
+
+    assign cache_query = (state == 4'b0000) ? 1 : 0;
 
     always @(set_pc_i) begin
         if (set_pc_i == `WriteEnable) begin
@@ -65,16 +70,21 @@ module pc_reg(
                         //if_addr_req_o <= if_pc_o;
                         state <= 4'b0001;
                         pc_memreq <= 1;
-                        //cache_query <= 1;
-                        inst_cache_addr_o <= if_addr_req_o;
+                        
+                        cache_enable <= 0;
+                        query_addr <= if_addr_req_o;
                     end
                 end
                 4'b0001 : begin
-                    cache_enable <= 0;
-                    if (!stall[0]) begin
+                    if (!stall[0] && !inst_hit) begin
                         state <= 4'b0010;
                         if_addr_req_o <= if_addr_req_o + 1;
-                    end else if (stall[0]) begin
+                    // end else if (!stall[0] && inst_hit) begin
+                    //     state <= 4'b1000;
+                    //     pc_memreq <= 0;
+                    //     if_inst_o <= cache_inst_i;
+                    //     if_addr_req_o <= if_pc_o + 32'h4;
+                    end else if (stall[0]) begin 
                         state <= 4'b0110;
                         if_addr_req_o <= if_pc_o;
                         last_state <= 4'b0010;
@@ -127,6 +137,15 @@ module pc_reg(
                     state = 4'b0000;
                     if_inst_o = if_inst_o >> 8;
                     if_inst_o[31:24] = mem_inst_factor_i;
+
+                    cache_enable = 1;
+                    inst_cache_addr_o = if_pc_o;
+                    inst_cache_o = if_inst_o;
+                end
+
+                // idle cache hit state
+                4'b1000: begin
+                    state = 4'b0000;
 
                 end
 

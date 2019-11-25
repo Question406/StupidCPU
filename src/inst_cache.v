@@ -37,8 +37,8 @@ module inst_cache(
     wire query_inst_valid;
 
     assign query_inst_caching_column = query_addr[6:0];
-    assign query_inst_caching_tag = inst_addr[(12 + 7 - 1):7];
-    assign query_inst_valid = inst_valid[inst_caching_column];
+    assign query_inst_caching_tag = query_addr[(12 + 7 - 1) : 7];
+    assign query_inst_valid = inst_valid[query_inst_caching_column];
     
     integer i;
 
@@ -55,6 +55,9 @@ module inst_cache(
                 inst_cache[inst_caching_column] <= inst_cache_i;
                 inst_tag[inst_caching_column] <= inst_caching_tag;
                 inst_valid[inst_caching_column] <= 1;
+
+                $display("cache changing, set: ", inst_caching_column, " to: ", inst_cache_i);
+                $display("cache tag set to : ", inst_caching_tag);
             end
         end
     end
@@ -64,6 +67,8 @@ module inst_cache(
             if (query_inst_valid && inst_tag[query_inst_caching_column] == query_inst_caching_tag) begin
                 inst_hit_o <= 1;
                 inst_cache_o <= inst_cache[query_inst_caching_column];
+
+                $display("cache hit: ", query_addr, " at ", query_inst_caching_column, " : ", inst_cache[query_inst_caching_column]);
             end
         end else begin
             inst_hit_o <= 0;
