@@ -5,6 +5,7 @@
 `define InstCacheBus 127:0
 
 module inst_cache(
+    input wire clk,
     input wire rst,
 
     input wire cache_query,
@@ -20,24 +21,24 @@ module inst_cache(
 
     // inst_cache
     reg [`InstBus] inst_cache[`InstCacheBus];
-    reg [11:0] inst_tag[`InstCacheBus];
+    reg [9:0] inst_tag[`InstCacheBus];
     reg inst_valid[`InstCacheBus];
 
 
     // temp caching info for an inst
-    wire [11:0] inst_caching_tag;
+    wire [9:0] inst_caching_tag;
     wire [6:0] inst_caching_column;
 
     assign inst_caching_column = inst_addr[6:0];
-    assign inst_caching_tag = inst_addr[(12 + 7 - 1):7];
+    assign inst_caching_tag = inst_addr[16:7];
 
     // query info
-    wire [11:0] query_inst_caching_tag;
+    wire [9:0] query_inst_caching_tag;
     wire [6:0] query_inst_caching_column;
     wire query_inst_valid;
 
     assign query_inst_caching_column = query_addr[6:0];
-    assign query_inst_caching_tag = query_addr[(12 + 7 - 1) : 7];
+    assign query_inst_caching_tag = query_addr[16 : 7];
     assign query_inst_valid = inst_valid[query_inst_caching_column];
     
     integer i;
@@ -56,19 +57,26 @@ module inst_cache(
                 inst_tag[inst_caching_column] <= inst_caching_tag;
                 inst_valid[inst_caching_column] <= 1;
 
-                $display("cache changing, set: ", inst_caching_column, " to: ", inst_cache_i);
-                $display("cache tag set to : ", inst_caching_tag);
+                if (`DEBUG) begin
+                    $display("cache changing, set: ", inst_caching_column, " to: ", inst_cache_i);
+                    $display("cache tag set to : ", inst_caching_tag);
+                end
             end
         end
     end
 
-    always @(cache_query) begin
+    always @(*) begin
         if (cache_query == 1) begin
             if (query_inst_valid && inst_tag[query_inst_caching_column] == query_inst_caching_tag) begin
                 inst_hit_o <= 1;
                 inst_cache_o <= inst_cache[query_inst_caching_column];
 
-                $display("cache hit: ", query_addr, " at ", query_inst_caching_column, " : ", inst_cache[query_inst_caching_column]);
+                if (`DEBUG) begin
+                    $display("cache hit: ", query_addr, " at ", query_inst_caching_column, " : ", inst_cache[query_inst_caching_column]);
+                end
+            end else begin
+                inst_hit_o <= 0;
+                inst_cache_o <= `ZeroWord;
             end
         end else begin
             inst_hit_o <= 0;

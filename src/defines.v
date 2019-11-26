@@ -1,7 +1,7 @@
 `ifndef DEFINES_V
 `define DEFINES_V
 
-`define DEBUG 1'b1
+`define DEBUG 1'b0
 
 `define RstEnable     1'b1
 `define RstDisable    1'b0

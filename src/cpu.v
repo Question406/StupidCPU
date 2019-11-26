@@ -1,6 +1,7 @@
 // RISCV32I CPU top module
 // port modification allowed for debugging purposes
 
+//`include "D:\\ComputerSystem\\Stupid_CPU\\Stupid_CPU.srcs\\sources_1\\new\\defines.v"
 `include "I:\\518030910421\\src\\defines.v"
 //`include "defines.v"
 
@@ -142,6 +143,10 @@ wire [`InstBus] inst_cache;
 wire inst_hit;
 wire [`InstBus] inst_hit_cache;
 
+wire cache_query;
+wire [`InstAddrBus] cache_query_addr;
+
+
 pc_reg pc_reg0(
     .clk(clk_in), .rst(rst_in),
 
@@ -153,11 +158,21 @@ pc_reg pc_reg0(
     
     .get_inst(get_inst), .if_pc_o(addr_if), .if_inst_o(if_inst),
 
-    .set_pc_i(set_pc), .set_pc_add_i(set_pc_addr)
+    .set_pc_i(set_pc), .set_pc_add_i(set_pc_addr),
+
+    .cache_enable(cache_enable), 
+    .inst_cache_addr_o(inst_cache_addr), 
+    .inst_cache_o(inst_cache),
+
+    .cache_query(cache_query), .query_addr(cache_query_addr),
+    .inst_hit(inst_hit), .cache_inst_i(inst_hit_cache)
 );
 
-inst_cache inst_cache0(
+inst_cache instcache0(
     .rst(rst_in),
+
+    .cache_query(cache_query), .query_addr(cache_query_addr),
+
     .cache_enable(cache_enable), .inst_addr(inst_cache_addr), .inst_cache_i(inst_cache),
 
     .inst_hit_o(inst_hit), .inst_cache_o(inst_hit_cache)
@@ -183,16 +198,19 @@ if_id if_id0(
     
     wire [`RegBus] id_ex_pc;
 
-
 id id0(
     .rst(rst_in), .pc_i(id_pc_i), .inst_i(id_inst_i),
     .reg1_data_i(reg1_data), .reg2_data_i(reg2_data),
     .reg1_read_o(reg1_read), .reg2_read_o(reg2_read),
     .reg1_addr_o(reg1_addr), .reg2_addr_o(reg2_addr),
 
-    .ex_wreg_i(ex_forwarding_wd),
-    .ex_wdata_i(ex_forwarding_data),
-    .ex_wd_i(ex_forwarding_rd),
+    .ex_wreg_i(ex_wreg_o),
+    .ex_wdata_i(ex_wdata_o),
+    .ex_wd_i(ex_wd_o),
+
+    .mem_wreg_i(mem_wreg),
+    .mem_wdata_i(mem_wdata),
+    .mem_wd_i(mem_wd),
 
     .id_stall_req(id_stall_req),
     
@@ -253,11 +271,11 @@ wire [`RegBus] ex_pc;
         .wd_o(ex_wd_o), .wreg_o(ex_wreg_o),
         .wdata_o(ex_wdata_o),
 
-        .mem_w_data(mmem_data), .mem_op_type(mem_op_type),
+        .mem_w_data(mmem_data), .mem_op_type(mem_op_type)
 
-        .ex_forwarding_wd(ex_forwarding_wd), 
-        .ex_forwarding_rd(ex_forwarding_rd), 
-        .ex_forwarding_data(ex_forwarding_data)
+        // .ex_forwarding_wd(ex_forwarding_wd), 
+        // .ex_forwarding_rd(ex_forwarding_rd), 
+        // .ex_forwarding_data(ex_forwarding_data)
     );
     
     wire[`AluSelBus] mem_op;

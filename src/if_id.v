@@ -41,7 +41,7 @@ integer i;
             end else if (get_inst && stall[0] == `NoStop) begin
                 //FIXME:
                 // $display("if_id pass");
-                // $display(if_pc, " ", if_inst);
+                //$display(if_pc, " ", if_inst);
                 //$display(i);
                 i = i + 1;
                 id_pc <= if_pc;
