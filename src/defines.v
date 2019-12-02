@@ -1,8 +1,12 @@
 `ifndef DEFINES_V
 `define DEFINES_V
 
+`define DEBUG 1'b0
+
 `define RstEnable     1'b1
 `define RstDisable    1'b0
+`define InstFlush     1'b1
+`define InstNoFlush   1'b0
 `define ZeroWord      32'h00000000
 `define WriteEnable   1'b1
 `define WriteDisable  1'b0
@@ -65,6 +69,7 @@
 `define Inst_Save 4'b0110
 `define Inst_ALU 4'b0111
 `define Inst_LogicOP 4'b1000
+`define Inst_NOP 4'b1001
 
 `define BEQ 6'b000000
 `define BNE 6'b000001
@@ -99,13 +104,18 @@
 `define SRA 6'b011110
 `define OR 6'b011111
 `define AND 6'b100000
+// empty inst, next op
+`define NOP 6'b111111
 
 //for memctrl
+// 3'b000 means no mem op
 `define mem_LB 3'b000
 `define mem_LH 3'b001
 `define mem_LW 3'b010
-`define mem_SB 3'b011
-`define mem_SH 3'b100
-`define mem_SW 3'b101
+`define mem_LBU 3'b011
+`define mem_LHU 3'b100
+`define mem_SB 3'b101
+`define mem_SH 3'b110
+`define mem_SW 3'b111
 
 `endif

@@ -19,14 +19,25 @@ module regfile(
 
     reg[`RegBus] regs[0:`RegNum-1];
 
+    integer i;  
+    initial begin
+        for (i = 0; i < 32; i = i + 1) begin
+            regs[i] <= `ZeroWord;
+        end
+    end
+
+
     always @ (posedge clk) begin
         if (rst == `RstDisable) begin
             if ((we == `WriteEnable) && (waddr != `RegNumLog2'h0)) begin
                 regs[waddr] <= wdata;
+               // $display("set ", waddr, " to ", $signed(wdata));
             end
         end
     end
     
+    //integer i;
+
     always @(*) begin
         if (rst == `RstEnable) begin
             rdata1 <= `ZeroWord;
@@ -39,8 +50,8 @@ module regfile(
         end else begin
             rdata1 <= `ZeroWord;
         end
-    end 
-       
+    end     
+
     always @(*) begin
         if (rst == `RstEnable) begin
             rdata2 <= `ZeroWord;
