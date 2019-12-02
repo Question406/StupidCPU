@@ -22,8 +22,12 @@ module id_ex(
     output reg[`RegBus] ex_reg2,
     output reg[`RegBus] imm_o,
     output reg[`RegAddrBus] ex_wd,
-    output reg ex_wreg
+    output reg ex_wreg,
+
+    output wire now_load
 );
+
+    assign now_load = (ex_alusel == `Inst_Load) ? 1 : 0;
 
     always @ (posedge clk) begin
         if (rst == `RstEnable || id_exflush_i) begin

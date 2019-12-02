@@ -10,9 +10,6 @@ module pc_reg(
     // memctrl send here
     input wire mem_busy,
     input wire [7:0] mem_inst_factor_i,
-
-    // MEM interrupts IF
-    //input wire mem_interrupt,
     
     // send to memctrl
     // IF always request something
@@ -36,7 +33,10 @@ module pc_reg(
 
     // inst_cache return inst
     input wire inst_hit,
-    input wire [`InstBus] cache_inst_i
+    input wire [`InstBus] cache_inst_i,
+
+    input wire predict_jump,
+
 );
 
     reg [3:0] state;
@@ -44,7 +44,6 @@ module pc_reg(
 
     assign get_inst = (state == 4'b0000) ? 1 : 0;
     //assign get_inst = (state == 4'b0000) ? 1 : 0;
-
     //assign cache_query = (state == 4'b0000) ? 1 : 0;
 
     always @(set_pc_i) begin
@@ -56,16 +55,14 @@ module pc_reg(
         end
     end
 
-    // always @(inst_hit) begin
-    //     if (inst_hit) begin
-    //         state <= 4'b1000;
-    //         pc_memreq <= 0;
-    //         if_inst_o <= cache_inst_i;
-    //         if_addr_req_o <= if_pc_o + 32'h4;
-    //         cache_query <= 0;
-    //         //$display("inst_hit get ", cache_inst_i);
-    //     end
-    // end
+    always @() begin
+        if (predict_jump) begin
+            
+        end
+    end
+
+    wire[6:0] op_code = if_inst_o[6:0];
+    wire[`RegBus] imm_B = {{20{if_inst_o[31]}},if_inst_o[7],if_inst_o[30:25],if_inst_o[11:8],1'b0};
 
     always @(posedge clk) begin
         if (rst == `RstEnable) begin
@@ -79,10 +76,6 @@ module pc_reg(
                 4'b0000: begin
                     if (!stall[0]) begin
                         if_pc_o <= if_addr_req_o;
-
-                        // if (if_pc_o == 4372) begin
-                        //     $display("watch");
-                        // end
                         //if_addr_req_o <= if_pc_o;
                         state <= 4'b0001;
                         pc_memreq <= 1;
@@ -90,21 +83,41 @@ module pc_reg(
                         cache_enable <= 0;
                         cache_query <= 1;
                         query_addr <= if_addr_req_o;
+                        last_state <= 4'b0000;
                     end
                 end
                 4'b0001 : begin
                     //if (!stall[0] && !inst_hit) begin
-                    // if (inst_hit) begin
-                    //     if (!stall[0]) begin
-                    //         state <= 4'b1000;
-                    //         pc_memreq <= 0;
-                    //         if_inst_o <= cache_inst_i;
-                    //         if_addr_req_o <= if_pc_o + 32'h0004;
-                    //         //$display("inst: ", cache_inst_i);
-                    //         //$display("inst_hit get ", cache_inst_i);
-                    //     end
-                    // end else begin
-                    //     if (!stall[0]) begin
+                    if (inst_hit) begin
+                        if (!stall[0]) begin
+                            state <= 4'b1000;
+                            pc_memreq <= 0;
+                            if_inst_o <= cache_inst_i;
+                            if_addr_req_o <= if_pc_o + 32'h0004;
+                            //$display("inst: ", cache_inst_i);
+                            //$display("inst_hit get ", cache_inst_i);
+                            last_state <= 4'b0000;
+                        end
+                    end else begin
+                        if (!stall[0]) begin
+                            state <= 4'b0010;
+                            last_state <= 4'b0000;
+                            if_addr_req_o <= if_addr_req_o + 1;
+                            cache_query <= 0;
+                        // end else if (!stall[0] && inst_hit) begin
+                        //     state <= 4'b1000;
+                        //     pc_memreq <= 0;
+                        //     if_inst_o <= cache_inst_i;
+                        //     if_addr_req_o <= if_pc_o + 32'h4;
+                        //     $display("inst_hit get ", cache_inst_i);
+                        end else if (stall[0]) begin 
+                            state <= 4'b0110;
+                            if_addr_req_o <= if_pc_o;
+                            last_state <= 4'b0010;
+                            pc_memreq <= 0;
+                        end
+                    end
+                    // if (!stall[0]) begin
                     //         state <= 4'b0010;
                     //         if_addr_req_o <= if_addr_req_o + 1;
                     //         cache_query <= 0;
@@ -120,31 +133,13 @@ module pc_reg(
                     //         last_state <= 4'b0010;
                     //         pc_memreq <= 0;
                     //     end
-                    // end
-
-
-                    if (!stall[0]) begin
-                            state <= 4'b0010;
-                            if_addr_req_o <= if_addr_req_o + 1;
-                            cache_query <= 0;
-                        // end else if (!stall[0] && inst_hit) begin
-                        //     state <= 4'b1000;
-                        //     pc_memreq <= 0;
-                        //     if_inst_o <= cache_inst_i;
-                        //     if_addr_req_o <= if_pc_o + 32'h4;
-                        //     $display("inst_hit get ", cache_inst_i);
-                        end else if (stall[0]) begin 
-                            state <= 4'b0110;
-                            if_addr_req_o <= if_pc_o;
-                            last_state <= 4'b0010;
-                            pc_memreq <= 0;
-                        end
                 end
                 4'b0010: begin
                     if_inst_o = if_inst_o >> 8;
                     if_inst_o[31:24] = mem_inst_factor_i;
                     if (!stall[0]) begin
                         state <= 4'b0011;
+                        last_state <= 4'b0000;
                         if_addr_req_o <= if_addr_req_o + 1;
                     end else if (stall[0]) begin
                         state <= 4'b0110;
@@ -159,6 +154,7 @@ module pc_reg(
                     if_inst_o[31:24] = mem_inst_factor_i;
                     if (!stall[0]) begin
                         state <= 4'b0100;
+                        last_state <= 4'b0000;
                         if_addr_req_o <= if_addr_req_o + 1;
                     end else if (stall[0]) begin
                         state <= 4'b0110;
@@ -173,6 +169,7 @@ module pc_reg(
                     if_inst_o[31:24] = mem_inst_factor_i;
                     if (!stall[0]) begin
                         state <= 4'b0101; 
+                        last_state <= 4'b0000;
                         pc_memreq <= 0;
                         if_addr_req_o <= if_addr_req_o + 1;
                     end else if (stall[0]) begin
@@ -184,17 +181,20 @@ module pc_reg(
 
                 4'b0101: begin
                     state = 4'b0000;
+                    last_state = 4'b0000;
                     if_inst_o = if_inst_o >> 8;
                     if_inst_o[31:24] = mem_inst_factor_i;
 
                     cache_enable = 1;
                     inst_cache_addr_o = if_pc_o;
                     inst_cache_o = if_inst_o;
+
+                    if (op_code == `)
                 end
 
                 // idle cache hit state
                 4'b1000: begin
-                    state = 4'b0000;
+                    state <= 4'b0000;
                 end
 
                 // interupt by mem
@@ -202,7 +202,7 @@ module pc_reg(
                     if (!stall[0]) begin
                         state <= 4'b0111;
                         pc_memreq <= 1;
-                    end 
+                    end
                 end
                 4'b0111: begin
                     if (!stall[0]) begin

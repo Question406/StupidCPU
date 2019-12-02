@@ -198,6 +198,8 @@ if_id if_id0(
     
     wire [`RegBus] id_ex_pc;
 
+    wire last_load;
+
 id id0(
     .rst(rst_in), .pc_i(id_pc_i), .inst_i(id_inst_i),
     .reg1_data_i(reg1_data), .reg2_data_i(reg2_data),
@@ -218,7 +220,9 @@ id id0(
     .reg1_o(id_reg1_o), .reg2_o(id_reg2_o),
     .id_pc_o(id_ex_pc),
     .imm_o(imm),
-    .wd_o(id_wd_o), .wreg_o(id_wreg_o)       
+    .wd_o(id_wd_o), .wreg_o(id_wreg_o),
+
+    .last_load(last_load)
 );
 
 regfile regfile1(
@@ -248,7 +252,8 @@ wire [`RegBus] ex_pc;
         .ex_pc(ex_pc),
         .ex_aluop(ex_aluop_i), .ex_alusel(ex_alusel_i),
         .ex_reg1(ex_reg1_i), .ex_reg2(ex_reg2_i), .imm_o(imm_ex),
-        .ex_wd(ex_wd_i), .ex_wreg(ex_wreg_i)
+        .ex_wd(ex_wd_i), .ex_wreg(ex_wreg_i),
+        .now_load(last_load)
     );
 
     wire[`AluSelBus] mem_op_type;
