@@ -1,0 +1,281 @@
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+--------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.3 (win64) Build 2405991 Thu Dec  6 23:38:27 MST 2018
+| Date         : Wed Dec  4 23:10:14 2019
+| Host         : DESKTOP-DL545GR running 64-bit major release  (build 9200)
+| Command      : report_control_sets -verbose -file riscv_top_control_sets_placed.rpt
+| Design       : riscv_top
+| Device       : xc7a35t
+--------------------------------------------------------------------------------------
+
+Control Set Information
+
+Table of Contents
+-----------------
+1. Summary
+2. Histogram
+3. Flip-Flop Distribution
+4. Detailed Control Set Information
+
+1. Summary
+----------
+
++----------------------------------------------------------+-------+
+|                          Status                          | Count |
++----------------------------------------------------------+-------+
+| Number of unique control sets                            |   208 |
+| Unused register locations in slices containing registers |   764 |
++----------------------------------------------------------+-------+
+
+
+2. Histogram
+------------
+
++--------+--------------+
+| Fanout | Control Sets |
++--------+--------------+
+|      1 |            2 |
+|      2 |            1 |
+|      4 |            4 |
+|      5 |            4 |
+|      8 |           10 |
+|      9 |            1 |
+|     10 |            5 |
+|     12 |           32 |
+|     15 |            1 |
+|    16+ |          148 |
++--------+--------------+
+
+
+3. Flip-Flop Distribution
+-------------------------
+
++--------------+-----------------------+------------------------+-----------------+--------------+
+| Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
++--------------+-----------------------+------------------------+-----------------+--------------+
+| No           | No                    | No                     |            5579 |         2894 |
+| No           | No                    | Yes                    |              31 |           14 |
+| No           | Yes                   | No                     |             182 |           95 |
+| Yes          | No                    | No                     |             111 |           32 |
+| Yes          | No                    | Yes                    |              34 |           11 |
+| Yes          | Yes                   | No                     |             571 |          189 |
++--------------+-----------------------+------------------------+-----------------+--------------+
+
+
+4. Detailed Control Set Information
+-----------------------------------
+
++----------------------------------------------+---------------------------------------------------------------------+-------------------------------------+------------------+----------------+
+|                 Clock Signal                 |                            Enable Signal                            |           Set/Reset Signal          | Slice Load Count | Bel Load Count |
++----------------------------------------------+---------------------------------------------------------------------+-------------------------------------+------------------+----------------+
+|  cpu0/ex_mem0/working0                       |                                                                     | cpu0/mem0/working_reg_i_2_n_1       |                1 |              1 |
+|  cpu0/memctrl0/if_mem_reg/G0                 |                                                                     |                                     |                1 |              1 |
+|  EXCLK_IBUF_BUFG                             |                                                                     | btnC_IBUF                           |                1 |              2 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_rx_blk/d_oversample_tick_cnt                     | rst                                 |                2 |              4 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_rx_fifo/E[0]                                     | rst                                 |                3 |              4 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_blk/d_baud_clk_tick_cnt                       | rst                                 |                2 |              4 |
+|  EXCLK_IBUF_BUFG                             | cpu0/pc_reg0/state                                                  | cpu0/id_ex0/rst_reg                 |                1 |              4 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_rx_blk/q_state[4]_i_1__0_n_1                     | rst                                 |                2 |              5 |
+|  cpu0/id_ex0/ex_aluop_reg[1]_0[0]            |                                                                     | rst                                 |                2 |              5 |
+|  cpu0/if_id0/id_inst_reg[5]_0[0]             |                                                                     | rst                                 |                2 |              5 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_blk/q_state[4]_i_1_n_1                        | rst                                 |                2 |              5 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_rx_fifo/q_empty_reg_2[0]                         | rst                                 |                4 |              8 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_rx_fifo/q_decode_cnt_reg[0]                      | rst                                 |                4 |              8 |
+| ~cpu0/memctrl0/if_mem_reg/Q                  |                                                                     | cpu0/memctrl0/if_mem_reg/Q          |                5 |              8 |
+|  EXCLK_IBUF_BUFG                             |                                                                     | cpu0/memctrl0/SR[0]                 |                3 |              8 |
+|  EXCLK_IBUF_BUFG                             |                                                                     | cpu0/memctrl0/q_io_en_reg_0[0]      |                6 |              8 |
+|  EXCLK_IBUF_BUFG                             |                                                                     | cpu0/memctrl0/q_io_en_reg_1[0]      |                1 |              8 |
+|  EXCLK_IBUF_BUFG                             | cpu0/ex_mem0/mem_op_type_o_reg[0]_1[0]                              | rst                                 |                6 |              8 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_rx_fifo/q_empty_reg_3                            | rst                                 |                5 |              8 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_blk/d_data                                    | rst                                 |                2 |              8 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_rx_blk/d_data                                    | rst                                 |                1 |              8 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_rx_fifo/q_empty_reg_2[1]                         | rst                                 |                4 |              9 |
+|  EXCLK_IBUF_BUFG                             |                                                                     |                                     |                6 |             10 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_blk/rd_en_prot                                | rst                                 |                5 |             10 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/wr_en_prot                               | rst                                 |                5 |             10 |
+|  EXCLK_IBUF_BUFG                             | cpu0/memctrl0/rd_en_prot                                            | rst                                 |                5 |             10 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/wr_en_prot                                          | rst                                 |                5 |             10 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_0_63_0_2_i_1_n_1                   |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_128_191_0_2_i_1_n_1                |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_192_255_0_2_i_1_n_1                |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_384_447_0_2_i_1_n_1                |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_448_511_0_2_i_1_n_1                |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_576_639_0_2_i_1_n_1                |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_512_575_0_2_i_1_n_1                |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_640_703_0_2_i_1_n_1                |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_320_383_0_2_i_1_n_1                |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_832_895_0_2_i_1_n_1                |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_768_831_0_2_i_1_n_1                |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_704_767_0_2_i_1_n_1                |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_960_1023_0_2_i_1_n_1               |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_896_959_0_2_i_1_n_1                |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_192_255_0_2_i_1__0_n_1  |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_128_191_0_2_i_1__0_n_1  |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_0_63_0_2_i_1__0_n_1     |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_256_319_0_2_i_1__0_n_1  |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_64_127_0_2_i_1__0_n_1   |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_384_447_0_2_i_1__0_n_1  |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_512_575_0_2_i_1__0_n_1  |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_448_511_0_2_i_1__0_n_1  |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_576_639_0_2_i_1__0_n_1  |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_640_703_0_2_i_1__0_n_1  |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_768_831_0_2_i_1__0_n_1  |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_832_895_0_2_i_1__0_n_1  |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_704_767_0_2_i_1__0_n_1  |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_960_1023_0_2_i_1__0_n_1 |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_320_383_0_2_i_1__0_n_1  |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_64_127_0_2_i_1_n_1                 |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/io_in_fifo/q_data_array_reg_256_319_0_2_i_1_n_1                |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_tx_fifo/q_data_array_reg_896_959_0_2_i_1__0_n_1  |                                     |                3 |             12 |
+|  EXCLK_IBUF_BUFG                             | cpu0/mem0/FSM_sequential_state_reg[0]_0                             | cpu0/ex_mem0/mem_op_type_o_reg[0]_0 |                5 |             15 |
+|  EXCLK_IBUF_BUFG                             | hci0/uart_blk/uart_rx_blk/p_0_in                                    |                                     |                2 |             16 |
+|  EXCLK_IBUF_BUFG                             | cpu0/mem0/FSM_sequential_state_reg[0]_0                             |                                     |                5 |             17 |
+|  EXCLK_IBUF_BUFG                             | cpu0/mem0/mem_req_addr[17]_i_1_n_1                                  | rst                                 |                6 |             18 |
+|  cpu0/id_ex0/ex_alusel_reg[1]_0[0]           |                                                                     | rst                                 |                8 |             22 |
+|  cpu0/mem0/mem_req_reg_1[0]                  |                                                                     | rst                                 |               17 |             27 |
+|  EXCLK_IBUF_BUFG                             | cpu0/pc_reg0/if_pc_o[31]_i_1_n_1                                    | rst                                 |                6 |             32 |
+|  cpu0/id_ex0/rst_reg_3[0]                    |                                                                     |                                     |               13 |             32 |
+|  cpu0/id_ex0/rst_reg_0[0]                    |                                                                     |                                     |               15 |             32 |
+|  cpu0/id_ex0/ex_aluop_reg[3]_2[0]            |                                                                     | rst                                 |               14 |             32 |
+|  cpu0/id_ex0/ex_aluop_reg[3]_1[0]            |                                                                     | rst                                 |               19 |             32 |
+|  EXCLK_IBUF_BUFG                             | cpu0/pc_reg0/if_inst_o[31]_i_1_n_1                                  | cpu0/id_ex0/rst_reg                 |               10 |             32 |
+|  EXCLK_IBUF_BUFG                             | cpu0/pc_reg0/if_addr_req_o[31]_i_1_n_1                              | rst                                 |               10 |             32 |
+|  EXCLK_IBUF_BUFG                             | hci0/sel                                                            | rst                                 |                8 |             32 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_34[0] |                                                                     |                                     |               24 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_66[0] |                                                                     |                                     |               18 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_83[0] |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_85[0] |                                                                     |                                     |               20 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_84[0] |                                                                     |                                     |               19 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_86[0] |                                                                     |                                     |               24 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_87[0] |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_88[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_31[0] |                                                                     |                                     |               24 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_57[0] |                                                                     |                                     |               19 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_77[0] |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_9[0]  |                                                                     |                                     |               19 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_64[0] |                                                                     |                                     |               26 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_76[0] |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_40[0] |                                                                     |                                     |               18 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_5[0]  |                                                                     |                                     |               20 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_51[0] |                                                                     |                                     |               24 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_78[0] |                                                                     |                                     |               28 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_80[0] |                                                                     |                                     |               26 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_81[0] |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_89[0] |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_90[0] |                                                                     |                                     |               25 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_53[0] |                                                                     |                                     |               20 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_75[0] |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_33[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_2[0]  |                                                                     |                                     |               18 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_26[0] |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_17[0] |                                                                     |                                     |               19 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_29[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_1[0]  |                                                                     |                                     |               20 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_3[0]  |                                                                     |                                     |               20 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_28[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_19[0] |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_5[0]  |                                                                     |                                     |               24 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_21[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_14[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_22[0] |                                                                     |                                     |               24 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_27[0] |                                                                     |                                     |               26 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_23[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_13[0] |                                                                     |                                     |               19 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_6[0]  |                                                                     |                                     |               18 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_4[0]  |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_8[0]  |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_24[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_18[0] |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_7[0]  |                                                                     |                                     |               20 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_28[0] |                                                                     |                                     |               18 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_10[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_25[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_12[0] |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_11[0] |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_16[0] |                                                                     |                                     |               18 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_9[0]  |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_10[0] |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_12[0] |                                                                     |                                     |               28 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_14[0] |                                                                     |                                     |               24 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_16[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_20[0] |                                                                     |                                     |               24 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_22[0] |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_13[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_21[0] |                                                                     |                                     |               27 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_20[0] |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_18[0] |                                                                     |                                     |               20 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_2[0]  |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_26[0] |                                                                     |                                     |               24 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_1[0]  |                                                                     |                                     |               20 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_17[0] |                                                                     |                                     |               25 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_15[0] |                                                                     |                                     |               25 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_23[0] |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_25[0] |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_27[0] |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_11[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_29[0] |                                                                     |                                     |               26 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_3[0]  |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_0[0]  |                                                                     |                                     |               20 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_30[0] |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_19[0] |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_24[0] |                                                                     |                                     |               20 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_59[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_73[0] |                                                                     |                                     |               20 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_36[0] |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_41[0] |                                                                     |                                     |               24 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_68[0] |                                                                     |                                     |               24 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_91[0] |                                                                     |                                     |               27 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_4[0]  |                                                                     |                                     |               20 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_37[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_42[0] |                                                                     |                                     |               25 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_49[0] |                                                                     |                                     |               19 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[2]_0[0]  |                                                                     |                                     |               19 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_38[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_70[0] |                                                                     |                                     |               20 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_60[0] |                                                                     |                                     |               28 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_61[0] |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_39[0] |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_72[0] |                                                                     |                                     |               25 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_35[0] |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_32[0] |                                                                     |                                     |               26 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_52[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_58[0] |                                                                     |                                     |               19 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_6[0]  |                                                                     |                                     |               19 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_65[0] |                                                                     |                                     |               26 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_43[0] |                                                                     |                                     |               23 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_54[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_55[0] |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_56[0] |                                                                     |                                     |               18 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_62[0] |                                                                     |                                     |               24 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_67[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_71[0] |                                                                     |                                     |               18 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_74[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_79[0] |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_50[0] |                                                                     |                                     |               21 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_48[0] |                                                                     |                                     |               19 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_69[0] |                                                                     |                                     |               22 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_7[0]  |                                                                     |                                     |               20 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_63[0] |                                                                     |                                     |               25 |             43 |
+|  instcache0/inst_valid10_out                 |                                                                     |                                     |               23 |             43 |
+|  instcache0/inst_valid11_out                 |                                                                     |                                     |               25 |             43 |
+|  instcache0/inst_valid9_out                  |                                                                     |                                     |               25 |             43 |
+|  instcache0/inst_valid3_out                  |                                                                     |                                     |               25 |             43 |
+|  instcache0/inst_valid6_out                  |                                                                     |                                     |               27 |             43 |
+|  instcache0/inst_valid4_out                  |                                                                     |                                     |               27 |             43 |
+|  instcache0/inst_valid5_out                  |                                                                     |                                     |               24 |             43 |
+|  n_0_3022_BUFG                               |                                                                     |                                     |               28 |             43 |
+|  instcache0/inst_valid8_out                  |                                                                     |                                     |               25 |             43 |
+|  instcache0/inst_valid7_out                  |                                                                     |                                     |               28 |             43 |
+|  instcache0/inst_valid2_out                  |                                                                     |                                     |               25 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_8[0]  |                                                                     |                                     |               19 |             43 |
+|  cpu0/pc_reg0/inst_cache_addr_o_reg[1]_82[0] |                                                                     |                                     |               24 |             43 |
+|  EXCLK_IBUF_BUFG                             | cpu0/pc_reg0/query_addr[16]_i_1_n_1                                 |                                     |               11 |             45 |
+|  EXCLK_IBUF_BUFG                             | cpu0/pc_reg0/inst_cache_addr_o[16]_i_1_n_1                          |                                     |               16 |             49 |
+|  EXCLK_IBUF_BUFG                             |                                                                     | rst                                 |               30 |             55 |
+|  EXCLK_IBUF_BUFG                             | cpu0/id_ex0/p_1_in                                                  | cpu0/id_ex0/rst_reg                 |               21 |             64 |
+|  EXCLK_IBUF_BUFG                             | cpu0/mem_wb0/p_0_in                                                 |                                     |               12 |             96 |
+|  EXCLK_IBUF_BUFG                             | cpu0/mem0/E[0]                                                      | rst                                 |               24 |            114 |
+|  EXCLK_IBUF_BUFG                             | cpu0/id_ex0/p_1_in                                                  | cpu0/id_ex0/ex_pc[31]_i_1_n_1       |               52 |            143 |
++----------------------------------------------+---------------------------------------------------------------------+-------------------------------------+------------------+----------------+
+
+

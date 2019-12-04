@@ -1,0 +1,779 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="riscv_top_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="riscv_top" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="33001859fs"></ZoomEndTime>
+      <Cursor1Time time="10237000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="175"></NameColumnWidth>
+      <ValueColumnWidth column_width="138"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="189" />
+   <wvobject fp_name="/riscv_top/cpu0/stall_controller0/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/stall_controller0/id_req" type="logic">
+      <obj_property name="ElementShortName">id_req</obj_property>
+      <obj_property name="ObjectShortName">id_req</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/stall_controller0/mem_req" type="logic">
+      <obj_property name="ElementShortName">mem_req</obj_property>
+      <obj_property name="ObjectShortName">mem_req</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/stall_controller0/stall" type="array">
+      <obj_property name="ElementShortName">stall[5:0]</obj_property>
+      <obj_property name="ObjectShortName">stall[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/memctrl0/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/memctrl0/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/memctrl0/if_req_in" type="logic">
+      <obj_property name="ElementShortName">if_req_in</obj_property>
+      <obj_property name="ObjectShortName">if_req_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/memctrl0/addr_if_in" type="array">
+      <obj_property name="ElementShortName">addr_if_in[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_if_in[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/memctrl0/mem_req_in" type="logic">
+      <obj_property name="ElementShortName">mem_req_in</obj_property>
+      <obj_property name="ObjectShortName">mem_req_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/memctrl0/mem_req_r_w" type="logic">
+      <obj_property name="ElementShortName">mem_req_r_w</obj_property>
+      <obj_property name="ObjectShortName">mem_req_r_w</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/memctrl0/addr_mem_in" type="array">
+      <obj_property name="ElementShortName">addr_mem_in[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_mem_in[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/memctrl0/data_mem_in" type="array">
+      <obj_property name="ElementShortName">data_mem_in[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_mem_in[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/memctrl0/inst_factor_o" type="array">
+      <obj_property name="ElementShortName">inst_factor_o[7:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_factor_o[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/memctrl0/output_data" type="array">
+      <obj_property name="ElementShortName">output_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">output_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/memctrl0/data_get" type="array">
+      <obj_property name="ElementShortName">data_get[7:0]</obj_property>
+      <obj_property name="ObjectShortName">data_get[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/memctrl0/mmem_r_w" type="logic">
+      <obj_property name="ElementShortName">mmem_r_w</obj_property>
+      <obj_property name="ObjectShortName">mmem_r_w</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/memctrl0/mmem_addr" type="array">
+      <obj_property name="ElementShortName">mmem_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mmem_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/memctrl0/mmem_data" type="array">
+      <obj_property name="ElementShortName">mmem_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mmem_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/memctrl0/if_mem" type="logic">
+      <obj_property name="ElementShortName">if_mem</obj_property>
+      <obj_property name="ObjectShortName">if_mem</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/stall" type="array">
+      <obj_property name="ElementShortName">stall[5:0]</obj_property>
+      <obj_property name="ObjectShortName">stall[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/set_pc_i" type="logic">
+      <obj_property name="ElementShortName">set_pc_i</obj_property>
+      <obj_property name="ObjectShortName">set_pc_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/set_pc_add_i" type="array">
+      <obj_property name="ElementShortName">set_pc_add_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">set_pc_add_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/mem_inst_factor_i" type="array">
+      <obj_property name="ElementShortName">mem_inst_factor_i[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_inst_factor_i[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/pc_memreq" type="logic">
+      <obj_property name="ElementShortName">pc_memreq</obj_property>
+      <obj_property name="ObjectShortName">pc_memreq</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/if_addr_req_o" type="array">
+      <obj_property name="ElementShortName">if_addr_req_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">if_addr_req_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/get_inst" type="logic">
+      <obj_property name="ElementShortName">get_inst</obj_property>
+      <obj_property name="ObjectShortName">get_inst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/if_pc_o" type="array">
+      <obj_property name="ElementShortName">if_pc_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">if_pc_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/if_inst_o" type="array">
+      <obj_property name="ElementShortName">if_inst_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">if_inst_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/cache_enable" type="logic">
+      <obj_property name="ElementShortName">cache_enable</obj_property>
+      <obj_property name="ObjectShortName">cache_enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/inst_cache_addr_o" type="array">
+      <obj_property name="ElementShortName">inst_cache_addr_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_cache_addr_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/inst_cache_o" type="array">
+      <obj_property name="ElementShortName">inst_cache_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_cache_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/cache_query" type="logic">
+      <obj_property name="ElementShortName">cache_query</obj_property>
+      <obj_property name="ObjectShortName">cache_query</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/query_addr" type="array">
+      <obj_property name="ElementShortName">query_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">query_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/inst_hit" type="logic">
+      <obj_property name="ElementShortName">inst_hit</obj_property>
+      <obj_property name="ObjectShortName">inst_hit</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/cache_inst_i" type="array">
+      <obj_property name="ElementShortName">cache_inst_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_inst_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/state" type="array">
+      <obj_property name="ElementShortName">state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">state[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/last_state" type="array">
+      <obj_property name="ElementShortName">last_state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">last_state[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/op_code" type="array">
+      <obj_property name="ElementShortName">op_code[6:0]</obj_property>
+      <obj_property name="ObjectShortName">op_code[6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/pc_reg0/imm_B" type="array">
+      <obj_property name="ElementShortName">imm_B[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imm_B[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/cache_query" type="logic">
+      <obj_property name="ElementShortName">cache_query</obj_property>
+      <obj_property name="ObjectShortName">cache_query</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/query_addr" type="array">
+      <obj_property name="ElementShortName">query_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">query_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/cache_enable" type="logic">
+      <obj_property name="ElementShortName">cache_enable</obj_property>
+      <obj_property name="ObjectShortName">cache_enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/inst_addr" type="array">
+      <obj_property name="ElementShortName">inst_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/inst_cache_i" type="array">
+      <obj_property name="ElementShortName">inst_cache_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_cache_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/inst_hit_o" type="logic">
+      <obj_property name="ElementShortName">inst_hit_o</obj_property>
+      <obj_property name="ObjectShortName">inst_hit_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/inst_cache_o" type="array">
+      <obj_property name="ElementShortName">inst_cache_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_cache_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/inst_cache" type="array">
+      <obj_property name="ElementShortName">inst_cache[127:0][31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_cache[127:0][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/inst_tag" type="array">
+      <obj_property name="ElementShortName">inst_tag[127:0][9:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_tag[127:0][9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/inst_valid" type="array">
+      <obj_property name="ElementShortName">inst_valid[127:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_valid[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/inst_caching_tag" type="array">
+      <obj_property name="ElementShortName">inst_caching_tag[9:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_caching_tag[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/inst_caching_column" type="array">
+      <obj_property name="ElementShortName">inst_caching_column[6:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_caching_column[6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/query_inst_caching_tag" type="array">
+      <obj_property name="ElementShortName">query_inst_caching_tag[9:0]</obj_property>
+      <obj_property name="ObjectShortName">query_inst_caching_tag[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/query_inst_caching_column" type="array">
+      <obj_property name="ElementShortName">query_inst_caching_column[6:0]</obj_property>
+      <obj_property name="ObjectShortName">query_inst_caching_column[6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/query_inst_valid" type="logic">
+      <obj_property name="ElementShortName">query_inst_valid</obj_property>
+      <obj_property name="ObjectShortName">query_inst_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/instcache0/i" type="array">
+      <obj_property name="ElementShortName">i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/if_id0/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/if_id0/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/if_id0/stall" type="array">
+      <obj_property name="ElementShortName">stall[5:0]</obj_property>
+      <obj_property name="ObjectShortName">stall[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/if_id0/get_inst" type="logic">
+      <obj_property name="ElementShortName">get_inst</obj_property>
+      <obj_property name="ObjectShortName">get_inst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/if_id0/if_pc" type="array">
+      <obj_property name="ElementShortName">if_pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">if_pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/if_id0/if_inst" type="array">
+      <obj_property name="ElementShortName">if_inst[31:0]</obj_property>
+      <obj_property name="ObjectShortName">if_inst[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/if_id0/if_idflush_i" type="logic">
+      <obj_property name="ElementShortName">if_idflush_i</obj_property>
+      <obj_property name="ObjectShortName">if_idflush_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/if_id0/id_pc" type="array">
+      <obj_property name="ElementShortName">id_pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">id_pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/if_id0/id_inst" type="array">
+      <obj_property name="ElementShortName">id_inst[31:0]</obj_property>
+      <obj_property name="ObjectShortName">id_inst[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/pc_i" type="array">
+      <obj_property name="ElementShortName">pc_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/inst_i" type="array">
+      <obj_property name="ElementShortName">inst_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/ex_wreg_i" type="logic">
+      <obj_property name="ElementShortName">ex_wreg_i</obj_property>
+      <obj_property name="ObjectShortName">ex_wreg_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/ex_wdata_i" type="array">
+      <obj_property name="ElementShortName">ex_wdata_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_wdata_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/ex_wd_i" type="array">
+      <obj_property name="ElementShortName">ex_wd_i[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_wd_i[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/mem_wreg_i" type="logic">
+      <obj_property name="ElementShortName">mem_wreg_i</obj_property>
+      <obj_property name="ObjectShortName">mem_wreg_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/mem_wdata_i" type="array">
+      <obj_property name="ElementShortName">mem_wdata_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_wdata_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/mem_wd_i" type="array">
+      <obj_property name="ElementShortName">mem_wd_i[4:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_wd_i[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/reg1_data_i" type="array">
+      <obj_property name="ElementShortName">reg1_data_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg1_data_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/reg2_data_i" type="array">
+      <obj_property name="ElementShortName">reg2_data_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg2_data_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/last_load" type="logic">
+      <obj_property name="ElementShortName">last_load</obj_property>
+      <obj_property name="ObjectShortName">last_load</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/id_stall_req" type="logic">
+      <obj_property name="ElementShortName">id_stall_req</obj_property>
+      <obj_property name="ObjectShortName">id_stall_req</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/reg1_read_o" type="logic">
+      <obj_property name="ElementShortName">reg1_read_o</obj_property>
+      <obj_property name="ObjectShortName">reg1_read_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/reg2_read_o" type="logic">
+      <obj_property name="ElementShortName">reg2_read_o</obj_property>
+      <obj_property name="ObjectShortName">reg2_read_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/reg1_addr_o" type="array">
+      <obj_property name="ElementShortName">reg1_addr_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">reg1_addr_o[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/reg2_addr_o" type="array">
+      <obj_property name="ElementShortName">reg2_addr_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">reg2_addr_o[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/id_pc_o" type="array">
+      <obj_property name="ElementShortName">id_pc_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">id_pc_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/aluop_o" type="array">
+      <obj_property name="ElementShortName">aluop_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">aluop_o[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/alusel_o" type="array">
+      <obj_property name="ElementShortName">alusel_o[5:0]</obj_property>
+      <obj_property name="ObjectShortName">alusel_o[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/imm_o" type="array">
+      <obj_property name="ElementShortName">imm_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imm_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/reg1_o" type="array">
+      <obj_property name="ElementShortName">reg1_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg1_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/reg2_o" type="array">
+      <obj_property name="ElementShortName">reg2_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg2_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/wreg_o" type="logic">
+      <obj_property name="ElementShortName">wreg_o</obj_property>
+      <obj_property name="ObjectShortName">wreg_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/wd_o" type="array">
+      <obj_property name="ElementShortName">wd_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">wd_o[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/op_code" type="array">
+      <obj_property name="ElementShortName">op_code[6:0]</obj_property>
+      <obj_property name="ObjectShortName">op_code[6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/op2" type="array">
+      <obj_property name="ElementShortName">op2[4:0]</obj_property>
+      <obj_property name="ObjectShortName">op2[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/funct3" type="array">
+      <obj_property name="ElementShortName">funct3[3:0]</obj_property>
+      <obj_property name="ObjectShortName">funct3[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/rd" type="array">
+      <obj_property name="ElementShortName">rd[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rd[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/rs1" type="array">
+      <obj_property name="ElementShortName">rs1[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rs1[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/rs2" type="array">
+      <obj_property name="ElementShortName">rs2[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rs2[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/funct7" type="array">
+      <obj_property name="ElementShortName">funct7[7:0]</obj_property>
+      <obj_property name="ObjectShortName">funct7[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/imm_I" type="array">
+      <obj_property name="ElementShortName">imm_I[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imm_I[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/imm_S" type="array">
+      <obj_property name="ElementShortName">imm_S[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imm_S[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/imm_B" type="array">
+      <obj_property name="ElementShortName">imm_B[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imm_B[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/imm_U" type="array">
+      <obj_property name="ElementShortName">imm_U[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imm_U[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id0/imm_J" type="array">
+      <obj_property name="ElementShortName">imm_J[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imm_J[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/id_pc" type="array">
+      <obj_property name="ElementShortName">id_pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">id_pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/id_aluop" type="array">
+      <obj_property name="ElementShortName">id_aluop[3:0]</obj_property>
+      <obj_property name="ObjectShortName">id_aluop[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/id_alusel" type="array">
+      <obj_property name="ElementShortName">id_alusel[5:0]</obj_property>
+      <obj_property name="ObjectShortName">id_alusel[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/id_reg1" type="array">
+      <obj_property name="ElementShortName">id_reg1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">id_reg1[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/id_reg2" type="array">
+      <obj_property name="ElementShortName">id_reg2[31:0]</obj_property>
+      <obj_property name="ObjectShortName">id_reg2[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/imm_i" type="array">
+      <obj_property name="ElementShortName">imm_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imm_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/id_wd" type="array">
+      <obj_property name="ElementShortName">id_wd[4:0]</obj_property>
+      <obj_property name="ObjectShortName">id_wd[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/id_wreg" type="logic">
+      <obj_property name="ElementShortName">id_wreg</obj_property>
+      <obj_property name="ObjectShortName">id_wreg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/id_exflush_i" type="logic">
+      <obj_property name="ElementShortName">id_exflush_i</obj_property>
+      <obj_property name="ObjectShortName">id_exflush_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/stall" type="array">
+      <obj_property name="ElementShortName">stall[5:0]</obj_property>
+      <obj_property name="ObjectShortName">stall[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/ex_pc" type="array">
+      <obj_property name="ElementShortName">ex_pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/ex_aluop" type="array">
+      <obj_property name="ElementShortName">ex_aluop[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_aluop[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/ex_alusel" type="array">
+      <obj_property name="ElementShortName">ex_alusel[5:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_alusel[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/ex_reg1" type="array">
+      <obj_property name="ElementShortName">ex_reg1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_reg1[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/ex_reg2" type="array">
+      <obj_property name="ElementShortName">ex_reg2[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_reg2[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/imm_o" type="array">
+      <obj_property name="ElementShortName">imm_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imm_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/ex_wd" type="array">
+      <obj_property name="ElementShortName">ex_wd[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_wd[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/ex_wreg" type="logic">
+      <obj_property name="ElementShortName">ex_wreg</obj_property>
+      <obj_property name="ObjectShortName">ex_wreg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/id_ex0/now_load" type="logic">
+      <obj_property name="ElementShortName">now_load</obj_property>
+      <obj_property name="ObjectShortName">now_load</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/pc_i" type="array">
+      <obj_property name="ElementShortName">pc_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/aluop_i" type="array">
+      <obj_property name="ElementShortName">aluop_i[3:0]</obj_property>
+      <obj_property name="ObjectShortName">aluop_i[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/alusel_i" type="array">
+      <obj_property name="ElementShortName">alusel_i[5:0]</obj_property>
+      <obj_property name="ObjectShortName">alusel_i[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/imm_i" type="array">
+      <obj_property name="ElementShortName">imm_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imm_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/reg1_i" type="array">
+      <obj_property name="ElementShortName">reg1_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg1_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/reg2_i" type="array">
+      <obj_property name="ElementShortName">reg2_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg2_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/wd_i" type="array">
+      <obj_property name="ElementShortName">wd_i[4:0]</obj_property>
+      <obj_property name="ObjectShortName">wd_i[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/wreg_i" type="logic">
+      <obj_property name="ElementShortName">wreg_i</obj_property>
+      <obj_property name="ObjectShortName">wreg_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/wd_o" type="array">
+      <obj_property name="ElementShortName">wd_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">wd_o[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/wreg_o" type="logic">
+      <obj_property name="ElementShortName">wreg_o</obj_property>
+      <obj_property name="ObjectShortName">wreg_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/wdata_o" type="array">
+      <obj_property name="ElementShortName">wdata_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wdata_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/set_pc_o" type="logic">
+      <obj_property name="ElementShortName">set_pc_o</obj_property>
+      <obj_property name="ObjectShortName">set_pc_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/pc_addr_o" type="array">
+      <obj_property name="ElementShortName">pc_addr_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_addr_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/if_idflush_o" type="logic">
+      <obj_property name="ElementShortName">if_idflush_o</obj_property>
+      <obj_property name="ObjectShortName">if_idflush_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/id_exflush_o" type="logic">
+      <obj_property name="ElementShortName">id_exflush_o</obj_property>
+      <obj_property name="ObjectShortName">id_exflush_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/mem_w_data" type="array">
+      <obj_property name="ElementShortName">mem_w_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_w_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/mem_op_type" type="array">
+      <obj_property name="ElementShortName">mem_op_type[5:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_op_type[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/ex_forwarding_wd" type="logic">
+      <obj_property name="ElementShortName">ex_forwarding_wd</obj_property>
+      <obj_property name="ObjectShortName">ex_forwarding_wd</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/ex_forwarding_rd" type="array">
+      <obj_property name="ElementShortName">ex_forwarding_rd[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_forwarding_rd[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex0/ex_forwarding_data" type="array">
+      <obj_property name="ElementShortName">ex_forwarding_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_forwarding_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex_mem0/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex_mem0/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex_mem0/ex_wd" type="array">
+      <obj_property name="ElementShortName">ex_wd[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_wd[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex_mem0/ex_wreg" type="logic">
+      <obj_property name="ElementShortName">ex_wreg</obj_property>
+      <obj_property name="ObjectShortName">ex_wreg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex_mem0/ex_wdata" type="array">
+      <obj_property name="ElementShortName">ex_wdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_wdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex_mem0/mmem_data_i" type="array">
+      <obj_property name="ElementShortName">mmem_data_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mmem_data_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex_mem0/mem_op_type_i" type="array">
+      <obj_property name="ElementShortName">mem_op_type_i[5:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_op_type_i[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex_mem0/stall" type="array">
+      <obj_property name="ElementShortName">stall[5:0]</obj_property>
+      <obj_property name="ObjectShortName">stall[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex_mem0/mem_wd" type="array">
+      <obj_property name="ElementShortName">mem_wd[4:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_wd[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex_mem0/mem_wreg" type="logic">
+      <obj_property name="ElementShortName">mem_wreg</obj_property>
+      <obj_property name="ObjectShortName">mem_wreg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex_mem0/mem_wdata" type="array">
+      <obj_property name="ElementShortName">mem_wdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_wdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex_mem0/mmem_data_o" type="array">
+      <obj_property name="ElementShortName">mmem_data_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mmem_data_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/ex_mem0/mem_op_type_o" type="array">
+      <obj_property name="ElementShortName">mem_op_type_o[5:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_op_type_o[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/wd_i" type="array">
+      <obj_property name="ElementShortName">wd_i[4:0]</obj_property>
+      <obj_property name="ObjectShortName">wd_i[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/wreg_i" type="logic">
+      <obj_property name="ElementShortName">wreg_i</obj_property>
+      <obj_property name="ObjectShortName">wreg_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/wdata_i" type="array">
+      <obj_property name="ElementShortName">wdata_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wdata_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/memctrl_data_in" type="array">
+      <obj_property name="ElementShortName">memctrl_data_in[7:0]</obj_property>
+      <obj_property name="ObjectShortName">memctrl_data_in[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/mem_w_data_i" type="array">
+      <obj_property name="ElementShortName">mem_w_data_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_w_data_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/mem_op_type_i" type="array">
+      <obj_property name="ElementShortName">mem_op_type_i[5:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_op_type_i[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/mem_stall_req" type="logic">
+      <obj_property name="ElementShortName">mem_stall_req</obj_property>
+      <obj_property name="ObjectShortName">mem_stall_req</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/mem_req" type="logic">
+      <obj_property name="ElementShortName">mem_req</obj_property>
+      <obj_property name="ObjectShortName">mem_req</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/mem_r_w" type="logic">
+      <obj_property name="ElementShortName">mem_r_w</obj_property>
+      <obj_property name="ObjectShortName">mem_r_w</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/mem_req_addr" type="array">
+      <obj_property name="ElementShortName">mem_req_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_req_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/mem_req_data" type="array">
+      <obj_property name="ElementShortName">mem_req_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_req_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/wd_o" type="array">
+      <obj_property name="ElementShortName">wd_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">wd_o[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/wreg_o" type="logic">
+      <obj_property name="ElementShortName">wreg_o</obj_property>
+      <obj_property name="ObjectShortName">wreg_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/wdata_o" type="array">
+      <obj_property name="ElementShortName">wdata_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wdata_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/working" type="logic">
+      <obj_property name="ElementShortName">working</obj_property>
+      <obj_property name="ObjectShortName">working</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/state" type="array">
+      <obj_property name="ElementShortName">state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">state[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/read_data" type="array">
+      <obj_property name="ElementShortName">read_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">read_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem0/work_done" type="logic">
+      <obj_property name="ElementShortName">work_done</obj_property>
+      <obj_property name="ObjectShortName">work_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem_wb0/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem_wb0/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem_wb0/mem_wd" type="array">
+      <obj_property name="ElementShortName">mem_wd[4:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_wd[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem_wb0/mem_wreg" type="logic">
+      <obj_property name="ElementShortName">mem_wreg</obj_property>
+      <obj_property name="ObjectShortName">mem_wreg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem_wb0/mem_wdata" type="array">
+      <obj_property name="ElementShortName">mem_wdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_wdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem_wb0/stall" type="array">
+      <obj_property name="ElementShortName">stall[5:0]</obj_property>
+      <obj_property name="ObjectShortName">stall[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem_wb0/wb_wd" type="array">
+      <obj_property name="ElementShortName">wb_wd[4:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_wd[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem_wb0/wb_wreg" type="logic">
+      <obj_property name="ElementShortName">wb_wreg</obj_property>
+      <obj_property name="ObjectShortName">wb_wreg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/riscv_top/cpu0/mem_wb0/wb_wdata" type="array">
+      <obj_property name="ElementShortName">wb_wdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_wdata[31:0]</obj_property>
+   </wvobject>
+</wave_config>
