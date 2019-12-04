@@ -1,0 +1,31 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../../common/block_ram/block_ram.v" \
+"../../../../../cpu.v" \
+"../../../../../ex.v" \
+"../../../../../ex_mem.v" \
+"../../../../../common/fifo/fifo.v" \
+"../../../../../hci.v" \
+"../../../../../id.v" \
+"../../../../../id_ex.v" \
+"../../../../../if_id.v" \
+"../../../../../inst_cache.v" \
+"../../../../../mem.v" \
+"../../../../../mem_wb.v" \
+"../../../../../memctrl.v" \
+"../../../../../pc_reg.v" \
+"../../../../../ram.v" \
+"../../../../../regfile.v" \
+"../../../../../riscv_top.v" \
+"../../../../../stall_controller.v" \
+"../../../../../common/uart/uart.v" \
+"../../../../../common/uart/uart_baud_clk.v" \
+"../../../../../common/uart/uart_rx.v" \
+"../../../../../common/uart/uart_tx.v" \
+"../../../../../testbench.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
