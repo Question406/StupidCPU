@@ -15,6 +15,8 @@ module id_ex(
     input wire id_exflush_i,
     input wire [5:0] stall,
     
+    input wire load_done,
+        
     output reg[`RegBus] ex_pc,
     output reg[`AluOpBus] ex_aluop,
     output reg[`AluSelBus] ex_alusel,
@@ -24,10 +26,11 @@ module id_ex(
     output reg[`RegAddrBus] ex_wd,
     output reg ex_wreg,
 
-    output wire now_load
+    output wire id_stall_req
 );
 
-    assign now_load = (ex_alusel == `Inst_Load) ? 1 : 0;
+    reg last_load;
+    assign id_stall_req = (last_load) ? 1 : 0;
 
     always @ (posedge clk) begin
         if (rst == `RstEnable || id_exflush_i) begin
@@ -39,6 +42,17 @@ module id_ex(
             imm_o <= `ZeroWord;
             ex_wd <= `NOPRegAddr;
             ex_wreg <= `WriteDisable;       
+            last_load <= 0;
+        end else if (load_done == 1) begin
+            last_load <= 0;
+            ex_pc <= id_pc;
+            ex_aluop <= id_aluop;
+            ex_alusel <= id_alusel;
+            imm_o <= imm_i;
+            ex_reg1 <= id_reg1;
+            ex_reg2 <= id_reg2;
+            ex_wd <= id_wd;
+            ex_wreg <= id_wreg;
         end else if (stall[1] == `Stop && stall[2] == `NoStop) begin
             ex_pc <= `ZeroWord;
             ex_aluop <= `Inst_NOP;
@@ -47,7 +61,7 @@ module id_ex(
             ex_reg2 <= `ZeroWord;
             imm_o <= `ZeroWord;
             ex_wd <= `NOPRegAddr;
-            ex_wreg <= `WriteDisable;       
+            ex_wreg <= `WriteDisable;
         end 
         else if (stall[1] == `NoStop) begin
             ex_pc <= id_pc;
@@ -58,6 +72,9 @@ module id_ex(
             ex_reg2 <= id_reg2;
             ex_wd <= id_wd;
             ex_wreg <= id_wreg;
+            if (id_aluop == `Inst_Load) begin
+                last_load <= 1;
+            end
         end
     end
 endmodule

@@ -35,7 +35,7 @@ module ex(
     output wire[`RegBus] ex_forwarding_data
 );
     
-    assign ex_forwarding_wd = wreg_o; 
+    assign ex_forwarding_wd = (aluop_i == `Inst_Load || aluop_i == `Inst_Save) ? 0 : wreg_o; 
     assign ex_forwarding_rd = wd_o;
     assign ex_forwarding_data = wdata_o;
     
@@ -64,7 +64,6 @@ module ex(
                         $display("LUI ", wd_i, " ", imm_i);
                         $display("watchingpc ", pc_i);
                     end
-
                     
                     wd_o <= wd_i;
                     wreg_o <= `WriteEnable;

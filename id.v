@@ -18,11 +18,7 @@ module id(
     // reg data from regfile
     input wire[`RegBus] reg1_data_i,
     input wire[`RegBus] reg2_data_i,
-
-    input wire last_load,
     
-    // ask for stall
-    output wire id_stall_req, 
     
     // to reg
     output reg reg1_read_o,
@@ -53,10 +49,7 @@ module id(
     wire[`RegBus] imm_B = {{20{inst_i[31]}},inst_i[7],inst_i[30:25],inst_i[11:8],1'b0};
     wire[`RegBus] imm_U = {inst_i[31:12], {12'b0}};
     wire[`RegBus] imm_J = {{12{inst_i[31]}}, inst_i[19:12], inst_i[20], inst_i[30:21], 1'b0};
-    
-    // tell whthether data hazard 
-
-    assign id_stall_req = (last_load) ? 1 : 0;
+   
     
     always @ (*) begin
         if (rst == `RstEnable) begin
@@ -69,9 +62,9 @@ module id(
             reg1_addr_o <= `NOPRegAddr;
             reg2_addr_o <= `NOPRegAddr;
             imm_o = `ZeroWord;
+
             //last_load <= 1'b0;
         end else begin
-            if (last_load == 0) begin
 //            $display("id doing\n");
 //            $display(pc_i, " ", inst_i);
             id_pc_o <= pc_i;
@@ -90,23 +83,20 @@ module id(
                     imm_o <= imm_U;
                     aluop_o <= `Inst_LUI;
                     
-                    //last_load <= 1'b0;
                 end
                 `InstClass_AUIPC : begin
                     wreg_o <= `WriteEnable;
                     wd_o <= rd;
                     imm_o <= imm_U;
                     aluop_o <= `Inst_AUIPC;
-                    
-                    //last_load <= 1'b0;
+
                 end
                 `InstClass_JAL : begin
                     wreg_o <= `WriteEnable;
                     wd_o <= rd;
                     imm_o <= imm_J;        
                     aluop_o <= `Inst_JAL;
-                    
-                    //last_load <= 1'b0;            
+        
                 end
                 `InstClass_JALR : begin
                     reg1_read_o <= 1'b1;
@@ -115,8 +105,7 @@ module id(
                     wd_o <= rd;
                     imm_o <= imm_I;
                     aluop_o <= `Inst_JALR;
-                    
-                    //last_load <= 1'b0;
+
                 end
                 `InstClass_Branch : begin
                     reg1_read_o <= 1'b1;
@@ -131,12 +120,10 @@ module id(
                         3'b110 : alusel_o <= `BLTU;
                         3'b111 : alusel_o <= `BGEU;
                     endcase
-                    
-                   // last_load <= 1'b0;
+
                 end
                 `InstClass_Load : begin
-                    //last_load <= 1'b1;
-                    
+
                     reg1_read_o <= 1'b1;
                     reg1_addr_o <= rs1;
                     wreg_o <= `WriteEnable;
@@ -162,8 +149,7 @@ module id(
                         3'b001 : alusel_o <= `SH;
                         3'b010 : alusel_o <= `SW;
                     endcase
-                    
-                    //last_load <= 1'b0;
+
                 end
                 `InstClass_LogicOP : begin
                     reg1_read_o <= 1'b1;
@@ -182,8 +168,6 @@ module id(
                         3'b101 : alusel_o <= `SRLI;
                         3'b101 : alusel_o <= `SRAI;
                     endcase
-                    
-                    //last_load <= 1'b0;
                 end
                 `InstClass_ALUOp : begin
                     reg1_read_o <= 1'b1;
@@ -201,8 +185,7 @@ module id(
                         3'b110 : alusel_o <= `OR;
                         3'b111 : alusel_o <= `AND;
                     endcase
-                    
-                    //last_load <= 1'b0;
+
                 end
                 default: begin  
                     id_pc_o <= `ZeroWord;
@@ -215,21 +198,20 @@ module id(
                     reg1_addr_o <= `NOPRegAddr;
                     reg2_addr_o <= `NOPRegAddr;
                     imm_o <= `ZeroWord;
-                    //last_load <= 1'b0;
-                end
+ 
+                end 
             endcase
         end          
 
-        end
-    end 
+    end
     
     // with data forwarding
     always @(*) begin 
         if (rst == `RstEnable) begin 
             reg1_o <= `ZeroWord;
-        end else if ((reg1_read_o == 1'b1) && (ex_wreg_i == 1'b1) && (ex_wd_i == reg1_addr_o) && (ex_wdata_i != `ZeroWord)) begin
+        end else if ((reg1_read_o == 1'b1) && (ex_wreg_i == 1'b1) && (ex_wd_i == reg1_addr_o)) begin
             reg1_o <= ex_wdata_i;
-        end else if ((reg1_read_o == 1'b1) && (mem_wreg_i == 1'b1) && (mem_wd_i == reg1_addr_o) && (mem_wdata_i != `ZeroWord)) begin
+        end else if ((reg1_read_o == 1'b1) && (mem_wreg_i == 1'b1) && (mem_wd_i == reg1_addr_o)) begin
             reg1_o <= mem_wdata_i;
         end else if (reg1_read_o == 1'b1) begin 
             reg1_o <= reg1_data_i;
@@ -241,9 +223,9 @@ module id(
     always @(*) begin
         if (rst == `RstEnable) begin
             reg2_o <= `ZeroWord;
-        end else if ((reg2_read_o == 1'b1) && (ex_wreg_i == 1'b1) && (ex_wd_i == reg2_addr_o) && (ex_wdata_i != `ZeroWord)) begin
+        end else if ((reg2_read_o == 1'b1) && (ex_wreg_i == 1'b1) && (ex_wd_i == reg2_addr_o)) begin
             reg2_o <= ex_wdata_i;
-        end else if ((reg2_read_o == 1'b1) && (mem_wreg_i == 1'b1) && (mem_wd_i == reg2_addr_o) && (mem_wdata_i != `ZeroWord)) begin
+        end else if ((reg2_read_o == 1'b1) && (mem_wreg_i == 1'b1) && (mem_wd_i == reg2_addr_o)) begin
             reg2_o <= mem_wdata_i;
         end else if (reg2_read_o == 1'b1) begin
             reg2_o <= reg2_data_i;

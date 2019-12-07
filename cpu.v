@@ -168,6 +168,10 @@ pc_reg pc_reg0(
     .inst_hit(inst_hit), .cache_inst_i(inst_hit_cache)
 );
 
+predictor predictor0(
+    .rst(rst_in)
+);
+
 inst_cache instcache0(
     .rst(rst_in), .clk(clk_in),
 
@@ -199,6 +203,7 @@ if_id if_id0(
     wire [`RegBus] id_ex_pc;
 
     wire last_load;
+    wire load_done;
 
 id id0(
     .rst(rst_in), .pc_i(id_pc_i), .inst_i(id_inst_i),
@@ -210,13 +215,9 @@ id id0(
     .ex_wdata_i(ex_forwarding_data),
     .ex_wd_i(ex_forwarding_rd),
 
-    .last_load(last_load),
-
-    .mem_wreg_i(mem_reg_o),
+    .mem_wreg_i(mem_wreg_o),
     .mem_wdata_i(mem_wdata_o),
     .mem_wd_i(mem_wd_o),
-
-    .id_stall_req(id_stall_req),
     
     .id_pc_o(id_ex_pc),
     .aluop_o(id_aluop_o), .alusel_o(id_alusel_o),
@@ -251,14 +252,17 @@ wire [`RegBus] ex_pc;
         .imm_i(imm),
         .id_wd(id_wd_o), .id_wreg(id_wreg_o),
         
+        .load_done(load_done),
+        .id_stall_req(id_stall_req),
+        
         .id_exflush_i(id_exflush),
 
         .ex_pc(ex_pc),
         .ex_aluop(ex_aluop_i), .ex_alusel(ex_alusel_i),
         .ex_reg1(ex_reg1_i), .ex_reg2(ex_reg2_i), .imm_o(imm_ex),
-        .ex_wd(ex_wd_i), .ex_wreg(ex_wreg_i),
+        .ex_wd(ex_wd_i), .ex_wreg(ex_wreg_i)
 
-        .now_load(last_load)
+        //.now_load(last_load)
     );
 
     wire[`AluSelBus] mem_op_type;
@@ -322,7 +326,9 @@ wire [`RegBus] ex_pc;
         .mem_r_w(mem_req_r_w),
 
         .wd_o(mem_wd_o), .wreg_o(mem_wreg_o),
-        .wdata_o(mem_wdata_o)
+        .wdata_o(mem_wdata_o),
+
+        .load_done(load_done)
     );    
 
     mem_wb mem_wb0(

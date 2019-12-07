@@ -88,9 +88,9 @@ module pc_reg(
                     end
                 end
                 4'b0001 : begin
-                    //if (!stall[0] && !inst_hit) begin
                     if (inst_hit) begin
                         if (!stall[0]) begin
+                            // inst_cache hit, just 
                             state <= 4'b1000;
                             pc_memreq <= 0;
                             if_inst_o <= cache_inst_i;
