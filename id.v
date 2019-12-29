@@ -27,7 +27,7 @@ module id(
     output reg[`RegAddrBus] reg2_addr_o,
     
     // to ex
-    output reg[`RegBus] id_pc_o,
+    output wire[`RegBus] id_pc_o,
     output reg[`AluOpBus] aluop_o,
     output reg[`AluSelBus] alusel_o,
     output reg[`RegBus] imm_o,
@@ -50,6 +50,7 @@ module id(
     wire[`RegBus] imm_U = {inst_i[31:12], {12'b0}};
     wire[`RegBus] imm_J = {{12{inst_i[31]}}, inst_i[19:12], inst_i[20], inst_i[30:21], 1'b0};
    
+    assign id_pc_o = pc_i;
     
     always @ (*) begin
         if (rst == `RstEnable) begin
@@ -61,13 +62,11 @@ module id(
             reg2_read_o <= 1'b0;
             reg1_addr_o <= `NOPRegAddr;
             reg2_addr_o <= `NOPRegAddr;
-            imm_o = `ZeroWord;
-
+            imm_o <= `ZeroWord;
             //last_load <= 1'b0;
         end else begin
 //            $display("id doing\n");
 //            $display(pc_i, " ", inst_i);
-            id_pc_o <= pc_i;
             aluop_o <= `Inst_NOP;
             alusel_o <= `NOP;
             wreg_o <= `WriteDisable;
@@ -76,6 +75,7 @@ module id(
             reg1_addr_o <= rs1;//inst_i[19:15]; //rs1 
             reg2_addr_o <= rs2;//inst_i[24:20]; //rs2
             imm_o <= `ZeroWord;
+            wd_o <= 0;
             case (op_code)
                 `InstClass_LUI : begin
                     wreg_o <= `WriteEnable;
@@ -111,6 +111,7 @@ module id(
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b1;
                     aluop_o <= `Inst_Branch;
+                    wd_o <= 0;
                     imm_o <= imm_B;
                     case (funct3)
                         3'b000 : alusel_o <= `BEQ;
@@ -119,11 +120,13 @@ module id(
                         3'b101 : alusel_o <= `BGE;
                         3'b110 : alusel_o <= `BLTU;
                         3'b111 : alusel_o <= `BGEU;
+                        default : begin
+                        
+                        end
                     endcase
 
                 end
                 `InstClass_Load : begin
-
                     reg1_read_o <= 1'b1;
                     reg1_addr_o <= rs1;
                     wreg_o <= `WriteEnable;
@@ -136,18 +139,23 @@ module id(
                         3'b001 : alusel_o <= `LH;
                         3'b010 : alusel_o <= `LW;
                         3'b100 : alusel_o <= `LBU;
-                        3'b101 : alusel_o <= `LHU;    
+                        3'b101 : alusel_o <= `LHU;   
+                        default : begin
+                        end 
                     endcase
                 end
                 `InstClass_Save : begin
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b1;
                     imm_o <= imm_S;
+                    wd_o <= 0;
                     aluop_o <= `Inst_Save;
                     case (funct3)
                         3'b000 : alusel_o <= `SB;
                         3'b001 : alusel_o <= `SH;
                         3'b010 : alusel_o <= `SW;
+                        default : begin
+                        end 
                     endcase
 
                 end
@@ -166,7 +174,9 @@ module id(
                         3'b111 : alusel_o <= `ANDI;
                         3'b001 : alusel_o <= `SLLI;
                         3'b101 : alusel_o <= `SRLI;
-                        3'b101 : alusel_o <= `SRAI;
+                        //3'b101 : alusel_o <= `SRAI;
+                        default : begin
+                        end 
                     endcase
                 end
                 `InstClass_ALUOp : begin
@@ -174,6 +184,7 @@ module id(
                     reg2_read_o <= 1'b1;
                     wreg_o <= `WriteEnable;
                     wd_o <= rd;
+                    imm_o <= `ZeroWord;
                     aluop_o <= `Inst_ALU;
                     case (funct3)
                         3'b000 : alusel_o <= (funct7 == 7'b0000000) ? `ADD : `SUB;
@@ -184,11 +195,13 @@ module id(
                         3'b101 : alusel_o <= (funct7 == 7'b0000000) ? `SRL : `SRA;
                         3'b110 : alusel_o <= `OR;
                         3'b111 : alusel_o <= `AND;
+                        default : begin
+                        end 
                     endcase
 
                 end
                 default: begin  
-                    id_pc_o <= `ZeroWord;
+                    //id_pc_o <= `ZeroWord;
                     aluop_o <= `Inst_NOP;
                     alusel_o <= `NOP;
                     wd_o <= `NOPRegAddr;
@@ -198,7 +211,6 @@ module id(
                     reg1_addr_o <= `NOPRegAddr;
                     reg2_addr_o <= `NOPRegAddr;
                     imm_o <= `ZeroWord;
- 
                 end 
             endcase
         end          

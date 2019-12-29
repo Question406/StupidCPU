@@ -25,7 +25,7 @@
 *  of the hw system as specified, and returns the specified data.
 ***************************************************************************************************/
 
-// modification allowed for debugging purposes
+// modification allowed for debugging purposes  
 
 module hci
 #(

@@ -31,6 +31,7 @@ module id_ex(
 
     reg last_load;
     assign id_stall_req = (last_load) ? 1 : 0;
+    //assign id_stall_req = 0;
 
     always @ (posedge clk) begin
         if (rst == `RstEnable || id_exflush_i) begin
@@ -43,16 +44,17 @@ module id_ex(
             ex_wd <= `NOPRegAddr;
             ex_wreg <= `WriteDisable;       
             last_load <= 0;
+         //end
         end else if (load_done == 1) begin
             last_load <= 0;
-            ex_pc <= id_pc;
-            ex_aluop <= id_aluop;
-            ex_alusel <= id_alusel;
-            imm_o <= imm_i;
-            ex_reg1 <= id_reg1;
-            ex_reg2 <= id_reg2;
-            ex_wd <= id_wd;
-            ex_wreg <= id_wreg;
+//            ex_pc <= id_pc;
+//            ex_aluop <= id_aluop;
+//            ex_alusel <= id_alusel;
+//            imm_o <= imm_i;
+//            ex_reg1 <= id_reg1;
+//            ex_reg2 <= id_reg2;
+//            ex_wd <= id_wd;
+//            ex_wreg <= id_wreg;
         end else if (stall[1] == `Stop && stall[2] == `NoStop) begin
             ex_pc <= `ZeroWord;
             ex_aluop <= `Inst_NOP;
@@ -72,7 +74,9 @@ module id_ex(
             ex_reg2 <= id_reg2;
             ex_wd <= id_wd;
             ex_wreg <= id_wreg;
-            if (id_aluop == `Inst_Load) begin
+//            if (id_aluop ==  `LB || id_aluop == `LH ||id_aluop == `LW || 
+//                    id_aluop == `LHU || id_aluop == `LBU) begin
+            if (id_aluop ==  `Inst_Load || id_aluop == `Inst_Save) begin
                 last_load <= 1;
             end
         end

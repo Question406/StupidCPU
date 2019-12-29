@@ -31,7 +31,7 @@ module regfile(
         if (rst == `RstDisable) begin
             if ((we == `WriteEnable) && (waddr != `RegNumLog2'h0)) begin
                 regs[waddr] <= wdata;
-               // $display("set ", waddr, " to ", $signed(wdata));
+               $display("set ", waddr, " to ", $signed(wdata));
             end
         end
     end

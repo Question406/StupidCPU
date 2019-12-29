@@ -14,8 +14,8 @@ module mem(
     input wire[`AluSelBus] mem_op_type_i,
     
     // ask for stall when mem need multiple cycles to finish
-    //output reg mem_stall_req,
-    output wire mem_stall_req,
+    output reg mem_stall_req,
+    //output wire mem_stall_req,
 
     // connect to mem_ctrl
     output reg mem_req,
@@ -31,30 +31,24 @@ module mem(
     output reg load_done
 );
 
-reg working;
+//reg working;
 reg [3:0] state;
 reg [`RegBus] read_data;
 reg work_done;
 
-assign mem_stall_req = (working) ? 1 : 0;
+reg [7:0] byte0;
+reg [7:0] byte1;
+reg [7:0] byte2;
+
+//assign mem_stall_req = (working) ? 1 : 0;
 
     always @(*) begin
         if (rst == `RstEnable) begin
-            //mem_stall_req <= 0;
-            working <= 0;
+            mem_stall_req <= 0;
         end else begin
-            if (work_done == 1) begin
-                working <= 0;
-            end else if (work_done == 0)begin
-                if (mem_op_type_i == `LB || mem_op_type_i == `LH || mem_op_type_i == `LW || 
+            mem_stall_req <= (work_done == 0 && (mem_op_type_i == `LB || mem_op_type_i == `LH || mem_op_type_i == `LW || 
                     mem_op_type_i == `LHU || mem_op_type_i == `LBU || mem_op_type_i == `SB || 
-                    mem_op_type_i == `SH || mem_op_type_i == `SW) begin
-                    working <= 1;
-                end else begin
-                    working <= 0;
-                end
-                //mem_stall_req <= 1;
-            end
+                    mem_op_type_i == `SH || mem_op_type_i == `SW)) ? 1 : 0;
         end
     end
 
@@ -83,15 +77,19 @@ assign mem_stall_req = (working) ? 1 : 0;
             mem_req_data <= `ZeroWord;
             state <= 4'b0000;
             load_done <= 1'b0;
-        end else if (working) begin
+            byte0 <= 0;
+            byte1 <= 0;
+            byte2 <= 0;
+            read_data <= 0;
+        end else if (mem_stall_req) begin
             case (state) 
                 4'b0000 : begin
-                    state = 4'b0001;
-                    mem_req = 1;
-                    mem_req_addr = wdata_i;
+                    state <= 4'b0001;
+                    mem_req <= 1;
+                    mem_req_addr <= wdata_i;
 
-                    work_done = 0;
-                    load_done = 0;
+                    work_done <= 0;
+                    load_done <= 0;
                     if (mem_op_type_i == `LB || mem_op_type_i == `LH || mem_op_type_i == `LW || 
                         mem_op_type_i == `LHU || mem_op_type_i == `LBU) begin
                             mem_r_w <= 0;
@@ -126,7 +124,7 @@ assign mem_stall_req = (working) ? 1 : 0;
                         mem_req <= 0;
                         mem_r_w <= 0;
 
-                        load_done <= 0;
+                        load_done <= 1;
                         //mem_stall_req <= 0;
                     end
                 end
@@ -164,8 +162,9 @@ assign mem_stall_req = (working) ? 1 : 0;
                             mem_req <= 1;
                             mem_r_w <= 0;
                             mem_req_addr <= mem_req_addr + 1;
-                            read_data = read_data >> 8;
-                            read_data[31:24] = memctrl_data_in;
+//                            read_data = read_data >> 8;
+//                            read_data[31:24] = memctrl_data_in;
+                            byte0 <= memctrl_data_in;
                             work_done <= 0;
 
                             load_done <= 0;
@@ -185,7 +184,7 @@ assign mem_stall_req = (working) ? 1 : 0;
                             mem_req <= 0;
                             mem_r_w <= 0;
 
-                            load_done <= 0;
+                            load_done <= 1;
                             //mem_stall_req <= 0;
                         end
                     end
@@ -197,7 +196,8 @@ assign mem_stall_req = (working) ? 1 : 0;
                         state<= 4'b0000;
                         //mem_stall_req <= 0;
                         //wdata_o <= {{16{memctrl_data_in[7]}}, memctrl_data_in, read_data[31:24]};
-                        read_data <= {{16{memctrl_data_in[7]}}, memctrl_data_in, read_data[31:24]};
+                        //read_data <= {{16{memctrl_data_in[7]}}, memctrl_data_in, read_data[31:24]};
+                        read_data <= {{16{memctrl_data_in[7]}}, memctrl_data_in, byte0};
                         work_done <= 1;
                         mem_req <= 0;
                         mem_r_w <= 0;
@@ -209,7 +209,8 @@ assign mem_stall_req = (working) ? 1 : 0;
                         state<= 4'b0000;                        
                         //mem_stall_req <= 0;
                         //wdata_o <= {16'b0, memctrl_data_in, read_data[31:24]};
-                        read_data <= {16'b0, memctrl_data_in, read_data[31:24]};
+                        //read_data <= {16'b0, memctrl_data_in, read_data[31:24]};
+                        read_data <= {16'b0, memctrl_data_in, byte0};
                         work_done <= 1;
                         mem_req <= 0;
                         mem_r_w <= 0;
@@ -222,8 +223,9 @@ assign mem_stall_req = (working) ? 1 : 0;
                             mem_r_w <= 0;
                             mem_req_addr <= mem_req_addr + 1;
                             //read_data[23:16] <= memctrl_data_in;
-                            read_data = read_data >> 8;
-                            read_data[31:24] = memctrl_data_in;
+//                            read_data = read_data >> 8;
+//                            read_data[31:24] = memctrl_data_in;
+                            byte1 <= memctrl_data_in;
                             work_done <= 0;
 
                             load_done <= 0;
@@ -249,8 +251,9 @@ assign mem_stall_req = (working) ? 1 : 0;
                         mem_r_w <= 0;
                         mem_req_addr <= mem_req_addr + 1;
                         //read_data[15:8] <= memctrl_data_in;
-                        read_data = read_data >> 8;
-                        read_data[31:24] = memctrl_data_in;
+//                        read_data = read_data >> 8;
+//                        read_data[31:24] = memctrl_data_in;
+                        byte2 <= memctrl_data_in;
                         work_done <= 0;
 
                         load_done <= 0;
@@ -260,6 +263,8 @@ assign mem_stall_req = (working) ? 1 : 0;
                         work_done <= 1;
                         load_done <= 0;
                         state<= 4'b0000;
+                        
+                        load_done <= 1;
                     end
                 end
 
@@ -271,7 +276,7 @@ assign mem_stall_req = (working) ? 1 : 0;
                         mem_req <= 0;
                         mem_r_w <= 0;
                         //wdata_o <= {memctrl_data_in, read_data[31:8]};
-                        read_data <= {memctrl_data_in, read_data[31:8]};
+                        read_data <= {memctrl_data_in, byte2, byte1, byte0};
                         work_done <= 1;
                         load_done <= 1;
                         // if (`DEBUG) begin
@@ -279,23 +284,26 @@ assign mem_stall_req = (working) ? 1 : 0;
                         // end
                     end
                 end
+                default : begin
+                end
 
                 // anything done state, need one cycle to flush current inst
-                4'b0110 : begin
-                    //state <= 4'b0111;
-                    state <= 4'b0000;
-                    work_done <= 1;
-                    load_done <= 0;
-                    mem_req <= 0;
-                    mem_r_w <= 0;
-                end
-                4'b0111 : begin
-                    state <= 4'b0000;
-                end
+//                4'b0110 : begin
+//                    //state <= 4'b0111;
+//                    state <= 4'b0000;
+//                    work_done <= 1;
+//                    load_done <= 0;
+//                    mem_req <= 0;
+//                    mem_r_w <= 0;
+//                end
+//                4'b0111 : begin
+//                    state <= 4'b0000;
+//                end
             endcase
         end else begin
             load_done <= 0;
             work_done <= 0;
+            state <= 4'b0000;
         end
     end
 

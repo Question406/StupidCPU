@@ -83,8 +83,8 @@ wire [`InstBus] if_inst;
 wire [`InstAddrBus] if_pc;
 
 wire ex_forwarding_wd;
-wire[`RegBus] ex_forwarding_data;
-wire[`RegAddrBus] ex_forwarding_rd;
+//wire[`RegBus] ex_forwarding_data;
+//wire[`RegAddrBus] ex_forwarding_rd;
 
 //wire mem_forwarding_wd;
 //wire [`RegBus] mem_forwarding_data;
@@ -103,7 +103,7 @@ stall_controller stall_controller0(
     .stall(stall)
 );
     
-wire [7:0] output_data;
+//wire [7:0] output_data;
 
 wire mmem_req;
 wire [`RegBus] addr_mem;
@@ -112,7 +112,7 @@ wire [7:0] data_mem;
 
 //wire mem_take_if;
 
-wire [7:0] mem_inst_factor;
+//wire [7:0] mem_inst_factor;
 
 wire get_inst;
 wire [`RegBus] if_req_addr;
@@ -127,11 +127,11 @@ memctrl memctrl0(
     .data_mem_in(data_mem), 
     .mem_req_r_w(mem_req_r_w),
     
-    .data_get(mem_din), .mmem_r_w(mem_wr), .mmem_addr(mem_a), .mmem_data(mem_dout),
+    .data_get(mem_din), .mmem_r_w(mem_wr), .mmem_addr(mem_a), .mmem_data(mem_dout)
 
-    .output_data(output_data),
+    //.output_data(output_data),
 
-    .inst_factor_o(mem_inst_factor)
+   // .inst_factor_o(mem_inst_factor)
 );
 
 // for cache
@@ -153,31 +153,31 @@ pc_reg pc_reg0(
 
     .set_pc_i(set_pc), .set_pc_add_i(set_pc_addr),
     
-    .mem_inst_factor_i(mem_inst_factor),
+    .mem_inst_factor_i(mem_din),
     
     .pc_memreq(if_req), .if_addr_req_o(if_req_addr),
     
     .get_inst(get_inst), .if_pc_o(addr_if), .if_inst_o(if_inst),
 
     .cache_enable(cache_enable), 
-    .inst_cache_addr_o(inst_cache_addr), 
-    .inst_cache_o(inst_cache),
+//    .inst_cache_addr_o(inst_cache_addr), 
+//    .inst_cache_o(inst_cache),
 
     .cache_query(cache_query), .query_addr(cache_query_addr),
 
     .inst_hit(inst_hit), .cache_inst_i(inst_hit_cache)
 );
 
-predictor predictor0(
-    .rst(rst_in)
-);
+//predictor predictor0(
+//    .rst(rst_in)
+//);
 
 inst_cache instcache0(
     .rst(rst_in), .clk(clk_in),
 
     .cache_query(cache_query), .query_addr(cache_query_addr),
 
-    .cache_enable(cache_enable), .inst_addr(inst_cache_addr), .inst_cache_i(inst_cache),
+    .cache_enable(cache_enable), .inst_addr(addr_if), .inst_cache_i(if_inst),
 
     .inst_hit_o(inst_hit), .inst_cache_o(inst_hit_cache)
 );
@@ -212,8 +212,10 @@ id id0(
     .reg1_addr_o(reg1_addr), .reg2_addr_o(reg2_addr),
 
     .ex_wreg_i(ex_forwarding_wd),
-    .ex_wdata_i(ex_forwarding_data),
-    .ex_wd_i(ex_forwarding_rd),
+    .ex_wdata_i(ex_wdata_o),
+    .ex_wd_i(ex_wd_o),
+//    .ex_wdata_i(ex_forwarding_data),
+//    .ex_wd_i(ex_forwarding_rd),
 
     .mem_wreg_i(mem_wreg_o),
     .mem_wdata_i(mem_wdata_o),
@@ -286,9 +288,9 @@ wire [`RegBus] ex_pc;
 
         .mem_w_data(mmem_data), .mem_op_type(mem_op_type),
 
-        .ex_forwarding_wd(ex_forwarding_wd), 
-        .ex_forwarding_rd(ex_forwarding_rd), 
-        .ex_forwarding_data(ex_forwarding_data)
+        .ex_forwarding_wd(ex_forwarding_wd)
+//        .ex_forwarding_rd(ex_forwarding_rd), 
+//        .ex_forwarding_data(ex_forwarding_data)
     );
     
     wire[`AluSelBus] mem_op;
@@ -316,7 +318,7 @@ wire [`RegBus] ex_pc;
 
         .mem_w_data_i(to_mem_data), .mem_op_type_i(mem_op),
 
-        .memctrl_data_in(output_data),
+        .memctrl_data_in(mem_din),
 
         .mem_stall_req(mem_stall_req),
 
@@ -346,20 +348,20 @@ wire [`RegBus] ex_pc;
     );
 
 
-always @(posedge clk_in)
-    begin
-    if (rst_in)
-        begin
-        
-        end
-    else if (!rdy_in)
-        begin
-        
-        end
-    else
-        begin
+//always @(posedge clk_in)
+//    begin
+//    if (rst_in)
+//        begin
+            
+//        end
+//    else if (!rdy_in)
+//        begin
+            
+//        end
+//    else
+//        begin
 
-        end
-end
+//        end
+//end
 
 endmodule
