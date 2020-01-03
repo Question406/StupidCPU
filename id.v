@@ -2,6 +2,8 @@
 
 module id(
     input wire rst,
+    input wire rdy, 
+    
     input wire[`InstAddrBus] pc_i,
     input wire[`InstBus] inst_i,
 
@@ -35,6 +37,11 @@ module id(
     output reg[`RegBus] reg2_o,
     output reg wreg_o,
     output reg[`RegAddrBus] wd_o
+    
+    // for last is load(the only data hazard)
+//    input wire[`AluSelBus] ex_optype,
+//    input wire[`RegAddrBus] ex_wd,
+//    output reg id_stall_req_o
 );
     
     wire[6:0] op_code = inst_i[6:0];
@@ -52,6 +59,22 @@ module id(
    
     assign id_pc_o = pc_i;
     
+//    reg last_load;
+//    reg[`RegAddrBus] last_wd;
+//    reg current;
+    
+    
+//    always @(*) begin
+//        if (rst == `RstEnable) begin
+//            id_stall_req_o <= 0;
+//        end if ((ex_optype == `LB || ex_optype == `LH || ex_optype == `LBU || ex_optype == `LHU || ex_optype == `LW)
+//                && (rs1 == ex_wd || rs2 == ex_wd)) begin
+//            id_stall_req_o <= 1;
+//        end else begin
+//            id_stall_req_o <= 0;
+//        end
+//    end
+    
     always @ (*) begin
         if (rst == `RstEnable) begin
             aluop_o <= `Inst_NOP;
@@ -63,7 +86,6 @@ module id(
             reg1_addr_o <= `NOPRegAddr;
             reg2_addr_o <= `NOPRegAddr;
             imm_o <= `ZeroWord;
-            //last_load <= 1'b0;
         end else begin
 //            $display("id doing\n");
 //            $display(pc_i, " ", inst_i);
@@ -82,7 +104,7 @@ module id(
                     wd_o <= rd;//inst_i[];// rd
                     imm_o <= imm_U;
                     aluop_o <= `Inst_LUI;
-                    
+
                 end
                 `InstClass_AUIPC : begin
                     wreg_o <= `WriteEnable;
@@ -96,7 +118,7 @@ module id(
                     wd_o <= rd;
                     imm_o <= imm_J;        
                     aluop_o <= `Inst_JAL;
-        
+
                 end
                 `InstClass_JALR : begin
                     reg1_read_o <= 1'b1;
@@ -105,6 +127,7 @@ module id(
                     wd_o <= rd;
                     imm_o <= imm_I;
                     aluop_o <= `Inst_JALR;
+   
 
                 end
                 `InstClass_Branch : begin
@@ -113,6 +136,7 @@ module id(
                     aluop_o <= `Inst_Branch;
                     wd_o <= 0;
                     imm_o <= imm_B;
+                    //last_load <= 0;
                     case (funct3)
                         3'b000 : alusel_o <= `BEQ;
                         3'b001 : alusel_o <= `BNE;
@@ -150,6 +174,7 @@ module id(
                     imm_o <= imm_S;
                     wd_o <= 0;
                     aluop_o <= `Inst_Save;
+                    
                     case (funct3)
                         3'b000 : alusel_o <= `SB;
                         3'b001 : alusel_o <= `SH;
@@ -201,7 +226,6 @@ module id(
 
                 end
                 default: begin  
-                    //id_pc_o <= `ZeroWord;
                     aluop_o <= `Inst_NOP;
                     alusel_o <= `NOP;
                     wd_o <= `NOPRegAddr;

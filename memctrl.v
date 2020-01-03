@@ -4,6 +4,8 @@ module memctrl(
     input wire clk,
     input wire rst,
     
+    input wire rdy, 
+    
     // memory request from if
     input wire if_req_in,
     input wire [`InstAddrBus] addr_if_in,

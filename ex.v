@@ -2,6 +2,8 @@
 
 module ex(
     input wire rst,
+    input wire rdy, 
+    
     input wire[`RegBus] pc_i, 
     input wire[`AluOpBus] aluop_i,
     input wire[`AluSelBus] alusel_i,

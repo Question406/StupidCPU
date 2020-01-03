@@ -94,6 +94,7 @@
 module inst_cache(
     input wire clk,
     input wire rst,
+    input wire rdy,
 
     input wire cache_query,
     input wire [`InstAddrBus] query_addr,
@@ -128,8 +129,8 @@ module inst_cache(
     assign query_inst_caching_tag = query_addr[17 : 10];
     assign query_inst_valid = inst_valid[query_inst_caching_column];
     
-    wire [7:0] tag;
-    assign tag = inst_tag[query_inst_caching_column];
+    wire [7:0] in_cache_tag;
+    assign in_cache_tag = inst_tag[query_inst_caching_column];
     
 //    integer i;
 //    initial begin
@@ -141,16 +142,20 @@ module inst_cache(
 //    end
 
     always @(posedge clk) begin
-        if (rst == 0 && cache_enable) begin
-                inst_cache[inst_caching_column] <= inst_cache_i;
-                inst_tag[inst_caching_column] <= inst_caching_tag;
-                inst_valid[inst_caching_column] <= 1;                    
-            end
+        if (rst == 0 && rdy == 1 && cache_enable) begin
+            inst_cache[inst_caching_column] <= inst_cache_i;
+            inst_tag[inst_caching_column] <= inst_caching_tag;
+            inst_valid[inst_caching_column] <= 1;
+        end
     end
 
     always @(*) begin
-        if (cache_query == 1) begin
-            if (query_inst_valid && tag == query_inst_caching_tag) begin
+        if (rst == `RstEnable || rdy == 0) begin
+            inst_hit_o <= 0;
+            inst_cache_o <= `ZeroWord;
+        end
+        else if (cache_query == 1) begin
+            if (query_inst_valid && in_cache_tag == query_inst_caching_tag) begin
                 inst_hit_o <= 1;
                 inst_cache_o <= inst_cache[query_inst_caching_column];
             end else begin
@@ -164,3 +169,6 @@ module inst_cache(
     end
 
 endmodule
+//    end
+
+//endmodule

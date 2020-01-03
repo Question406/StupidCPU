@@ -2,6 +2,9 @@
 
 module stall_controller(
     input wire rst,
+    
+    input wire rdy,
+    
     input wire id_req,
     input wire mem_req,
     
@@ -13,9 +16,13 @@ always @ (*) begin
     if (rst == `RstEnable) begin
         stall <= 6'b0;
     end else begin
-        if (mem_req) begin
+        if (!rdy) begin
+            stall <= 6'b111111;
+            
+        end if (mem_req) begin
             stall <= 6'b011111;
         end else if (id_req) begin
+            //stall <= 6'b000011;
             stall <= 6'b000011;
         end else begin
             stall <= 6'b0;

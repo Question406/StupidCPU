@@ -8,7 +8,7 @@
 module cpu(
     input  wire                 clk_in,			// system clock signal
     input  wire                 rst_in,			// reset signal
-    input  wire					        rdy_in,			// ready signal, pause cpu when low
+    input  wire					 rdy_in,			// ready signal, pause cpu when low
 
     input  wire [ 7:0]          mem_din,		// data input bus
     output wire [ 7:0]          mem_dout,		// data output bus
@@ -97,6 +97,7 @@ wire id_stall_req;
 
 stall_controller stall_controller0(
     .rst(rst_in),
+    .rdy(rdy_in),
     .id_req(id_stall_req),
     .mem_req(mem_stall_req),
 
@@ -147,7 +148,7 @@ wire [`InstAddrBus] cache_query_addr;
 
 
 pc_reg pc_reg0(
-    .clk(clk_in), .rst(rst_in),
+    .clk(clk_in), .rst(rst_in), .rdy(rdy_in),
 
     .stall(stall),
 
@@ -160,7 +161,7 @@ pc_reg pc_reg0(
     .get_inst(get_inst), .if_pc_o(addr_if), .if_inst_o(if_inst),
 
     .cache_enable(cache_enable), 
-//    .inst_cache_addr_o(inst_cache_addr), 
+    .inst_cache_addr_o(inst_cache_addr), 
     .inst_cache_o(inst_cache),
 
     .cache_query(cache_query), .query_addr(cache_query_addr),
@@ -168,26 +169,65 @@ pc_reg pc_reg0(
     .inst_hit(inst_hit), .cache_inst_i(inst_hit_cache)
 );
 
+
+inst_cache instcache0(
+    .rst(rst_in), .clk(clk_in), .rdy(rdy_in),
+
+    .cache_query(cache_query), .query_addr(cache_query_addr),
+
+    .cache_enable(cache_enable), //.inst_addr(addr_if),
+    .inst_addr(inst_cache_addr),
+    .inst_cache_i(inst_cache),
+
+    .inst_hit_o(inst_hit), .inst_cache_o(inst_hit_cache)
+);
+
+// flag
+//pc_reg pc_reg0(
+//    .clk(clk_in), .rst(rst_in),
+
+//    .stall(stall),
+
+//    .set_pc_i(set_pc), .set_pc_add_i(set_pc_addr),
+    
+//    .mem_inst_factor_i(mem_din),
+    
+//    .pc_memreq(if_req), .if_addr_req_o(if_req_addr),
+    
+//    .get_inst(get_inst), .if_pc_o(addr_if), .if_inst_o(if_inst),
+
+//    .cache_enable(cache_enable), 
+////    .inst_cache_addr_o(inst_cache_addr), 
+////    .inst_cache_o(inst_cache),
+
+//    .cache_query(cache_query), .query_addr(cache_query_addr),
+
+//    .inst_hit(inst_hit), .cache_inst_i(inst_hit_cache)
+//);
+
 //predictor predictor0(
 //    .rst(rst_in)
 //);
 
-inst_cache instcache0(
-    .rst(rst_in), .clk(clk_in),
+//inst_cache instcache0(
+//    .rst(rst_in), .clk(clk_in), .rdy(rdy_in),
 
-    .cache_query(cache_query), .query_addr(cache_query_addr),
+//    .cache_query(cache_query), .query_addr(cache_query_addr),
 
-    .cache_enable(cache_enable), .inst_addr(addr_if), .inst_cache_i(inst_cache),
+//    .cache_enable(cache_enable), .inst_addr(addr_if), .inst_cache_i(if_inst),
 
-    .inst_hit_o(inst_hit), .inst_cache_o(inst_hit_cache)
-);
+//    .inst_hit_o(inst_hit), .inst_cache_o(inst_hit_cache)
+//);
+
+
+// flag
 
 
 wire if_idflush;
 wire id_exflush;
 
 if_id if_id0(
-    .clk(clk_in), .rst(rst_in),
+    .clk(clk_in), .rst(rst_in), .rdy(rdy_in),
 
     .stall(stall),
 
@@ -204,8 +244,13 @@ if_id if_id0(
 
     wire last_load;
     wire load_done;
+    
+    wire[`AluSelBus] mem_op_type;
+    wire [`RegBus] mmem_data;
+    
 
 id id0(
+    .rdy(rdy_in),
     .rst(rst_in), .pc_i(id_pc_i), .inst_i(id_inst_i),
     .reg1_data_i(reg1_data), .reg2_data_i(reg2_data),
     .reg1_read_o(reg1_read), .reg2_read_o(reg2_read),
@@ -225,16 +270,16 @@ id id0(
     .aluop_o(id_aluop_o), .alusel_o(id_alusel_o),
     .reg1_o(id_reg1_o), .reg2_o(id_reg2_o),
     .imm_o(imm),
-    .wd_o(id_wd_o), .wreg_o(id_wreg_o)       
+    .wd_o(id_wd_o), .wreg_o(id_wreg_o)
+    
+    //.load_done(load_done),
+//    .ex_optype(mem_op_type),
+//    .ex_wd(ex_wd_o),
+//    .id_stall_req_o(id_stall_req)
 );
 
-
-
-    wire[`AluSelBus] mem_op_type;
-    wire [`RegBus] mmem_data;
-
 regfile regfile1(
-    .clk(clk_in), .rst(rst_in),
+    .clk(clk_in), .rst(rst_in), .rdy(rdy_in),
     .we(wb_wreg_i), .waddr(wb_wd_i),
     .wdata(wb_wdata_i), 
 
@@ -246,7 +291,7 @@ regfile regfile1(
     .raddr2(reg2_addr),
     .rdata2(reg2_data),
     
-    .ex_optype(mem_op_type),
+    .ex_optype(mem_op_type),     
     .ex_wd(ex_wd_o),             
     .id_stall_req_o(id_stall_req)
 );
@@ -254,7 +299,7 @@ regfile regfile1(
 wire [`RegBus] ex_pc;
 
     id_ex id_ex0(
-        .clk(clk_in), .rst(rst_in),
+        .clk(clk_in), .rst(rst_in), .rdy(rdy_in),
         .stall(stall),
 
         .id_pc(id_ex_pc),
@@ -262,6 +307,9 @@ wire [`RegBus] ex_pc;
         .id_reg1(id_reg1_o), .id_reg2(id_reg2_o),
         .imm_i(imm),
         .id_wd(id_wd_o), .id_wreg(id_wreg_o),
+        
+//        .load_done(load_done),
+//        .id_stall_req(id_stall_req),
         
         .id_exflush_i(id_exflush),
 
@@ -273,10 +321,9 @@ wire [`RegBus] ex_pc;
         //.now_load(last_load)
     );
 
-    
     ex ex0(
-        .rst(rst_in),
-        .pc_i(ex_pc),
+        .rst(rst_in), .rdy(rdy_in),
+        .pc_i(ex_pc), 
 
         .aluop_i(ex_aluop_i), .alusel_i(ex_alusel_i),
         .reg1_i(ex_reg1_i),  .reg2_i(ex_reg2_i),
@@ -301,7 +348,7 @@ wire [`RegBus] ex_pc;
     wire [`RegBus] to_mem_data;
 
     ex_mem ex_mem0(
-        .clk(clk_in), .rst(rst_in),
+        .clk(clk_in), .rst(rst_in), .rdy(rdy_in),
 
         .stall(stall),
 
@@ -315,8 +362,10 @@ wire [`RegBus] ex_pc;
     );
 
     mem mem0(
-        .clk(clk_in),
+        .clk(clk_in), 
+        .rdy(rdy_in),
         .rst(rst_in),
+
         .wd_i(mem_wd_i), .wreg_i(mem_wreg_i),
         .wdata_i(mem_wdata_i),
 
@@ -333,10 +382,12 @@ wire [`RegBus] ex_pc;
 
         .wd_o(mem_wd_o), .wreg_o(mem_wreg_o),
         .wdata_o(mem_wdata_o)
+
+       // .load_done(load_done)
     );    
 
     mem_wb mem_wb0(
-        .clk(clk_in),  .rst(rst_in),
+        .clk(clk_in),  .rst(rst_in), .rdy(rdy_in),
 
         .mem_wd(mem_wd_o), 
         .mem_wreg(mem_wreg_o),
