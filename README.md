@@ -22,7 +22,9 @@
 
 ## 2、架构示意图
 
-![normal](C:\Users\ASUS\Desktop\normal.PNG)![d-cache](C:\Users\ASUS\Desktop\d-cache.PNG) 
+![normal](normal.PNG)
+
+![d-cache](d-cache.PNG)
 
 ## 3、与教科书标准五级流水的异同
 
@@ -92,3 +94,25 @@
   d-cache的版本也是如此，经过多次尝试，2-way i-cache+ DM d-cache+（2，2）BHT predictor的版本只能在50mhz的情况下上板。
 
   最后阶段的调试心态爆炸，也没有时间，就只能这样了。
+
+#### 关于调试方法
+
++ 在进行CPU的调试过程中一直都陷入矛盾，肉眼看波形图极度困难，后来在数理逻辑的学习中获得了灵感
+
+  在RegisterMachine的章节里我们知道程序运行状态可以由寄存器状态大致看出，于是得到输出所有对寄存器的更改的调试方法
+
+  即在regfile的写端口写下 ``` $display("write at ", reg_addr, "  ", wdata)```
+
+  然后通过与保证正确性的旧版本输出对比达到快速定位错误的效果
+
+## 6、参考资料与致谢
+
+[1] 自己动手写CPU,雷思磊,电子工业出版社,2014
+
+[2] 17届多位学长学姐的Github仓库
+
+
+
+特别感谢郭林松同学在5周期fetch以及RAW datahazard方面给我提供的帮助
+
+特别助教们在上板，超频等多方面的倾力帮助
