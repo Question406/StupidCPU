@@ -26,9 +26,7 @@ module mem(
     // insts don't need to connect with mem_ctrl
     output reg[`RegAddrBus] wd_o,
     output reg wreg_o,
-    output reg[`RegBus] wdata_o,
-
-    output reg load_done
+    output reg[`RegBus] wdata_o
 );
 
 //reg working;
@@ -76,7 +74,6 @@ reg [7:0] byte2;
             mem_req_addr <= `ZeroWord;
             mem_req_data <= `ZeroWord;
             state <= 4'b0000;
-            load_done <= 1'b0;
             byte0 <= 0;
             byte1 <= 0;
             byte2 <= 0;
@@ -89,7 +86,6 @@ reg [7:0] byte2;
                     mem_req_addr <= wdata_i;
 
                     work_done <= 0;
-                    load_done <= 0;
                     if (mem_op_type_i == `LB || mem_op_type_i == `LH || mem_op_type_i == `LW || 
                         mem_op_type_i == `LHU || mem_op_type_i == `LBU) begin
                             mem_r_w <= 0;
@@ -108,15 +104,12 @@ reg [7:0] byte2;
                             state <= 4'b0010;
                             work_done <= 0;
 
-                            load_done <= 0;
                     end else if (mem_op_type_i == `SH || mem_op_type_i == `SW) begin
                             mem_r_w <= 1;
                             mem_req_data <= mem_w_data_i[15:8];
                             mem_req_addr <= mem_req_addr + 1;
                             state <= 4'b0010;
                             work_done <= 0;
-
-                            load_done <= 0;
                     end else if (mem_op_type_i == `SB) begin
                         //state<= 4'b0110;
                         state<= 4'b0000;
@@ -124,7 +117,6 @@ reg [7:0] byte2;
                         mem_req <= 0;
                         mem_r_w <= 0;
 
-                        load_done <= 1;
                         //mem_stall_req <= 0;
                     end
                 end
@@ -142,7 +134,6 @@ reg [7:0] byte2;
                         mem_req <= 0;
                         mem_r_w <= 0;
 
-                        load_done <= 1;
                         //mem_stall_req <= 0;
                     end else if (mem_op_type_i == `LBU) begin
                         mem_req <= 0;
@@ -155,7 +146,6 @@ reg [7:0] byte2;
                         mem_req <= 0;
                         mem_r_w <= 0;
 
-                        load_done <= 1;
                     end else begin
                         if (mem_op_type_i == `LH || mem_op_type_i == `LHU || mem_op_type_i == `LW) begin
                             state <= 4'b0011;
@@ -166,8 +156,6 @@ reg [7:0] byte2;
 //                            read_data[31:24] = memctrl_data_in;
                             byte0 <= memctrl_data_in;
                             work_done <= 0;
-
-                            load_done <= 0;
                         end else if (mem_op_type_i == `SW) begin
                             state <= 4'b0011;
                             mem_req <= 1;
@@ -175,16 +163,12 @@ reg [7:0] byte2;
                             mem_req_addr <= mem_req_addr + 1;
                             mem_req_data <= mem_w_data_i[23:16];
                             work_done <= 0;
-
-                            load_done <= 0;
                         end else if (mem_op_type_i == `SH) begin
                             //state<= 4'b0110;
                             state<= 4'b0000;
                             work_done <= 1;
                             mem_req <= 0;
                             mem_r_w <= 0;
-
-                            load_done <= 1;
                             //mem_stall_req <= 0;
                         end
                     end
@@ -201,8 +185,6 @@ reg [7:0] byte2;
                         work_done <= 1;
                         mem_req <= 0;
                         mem_r_w <= 0;
-
-                        load_done <= 1;
                     end else if (mem_op_type_i == `LHU) begin
                         mem_req <= 0;
                         //state<= 4'b0110;
@@ -214,8 +196,6 @@ reg [7:0] byte2;
                         work_done <= 1;
                         mem_req <= 0;
                         mem_r_w <= 0;
-
-                        load_done <= 1;
                     end else begin
                         if (mem_op_type_i == `LW) begin
                             state <= 4'b0100;
@@ -227,8 +207,6 @@ reg [7:0] byte2;
 //                            read_data[31:24] = memctrl_data_in;
                             byte1 <= memctrl_data_in;
                             work_done <= 0;
-
-                            load_done <= 0;
                         end else if (mem_op_type_i == `SW) begin
                             state <= 4'b0100;
                             mem_req <= 1;
@@ -239,7 +217,7 @@ reg [7:0] byte2;
                             state<= 4'b0100;
                             work_done <= 0;
 
-                            load_done <= 0;
+ 
                             //mem_stall_req <= 0;
                         end
                     end
@@ -256,15 +234,11 @@ reg [7:0] byte2;
                         byte2 <= memctrl_data_in;
                         work_done <= 0;
 
-                        load_done <= 0;
                     end else if (mem_op_type_i == `SW) begin
                         mem_req <= 0;
                         mem_r_w <= 0;
                         work_done <= 1;
-                        load_done <= 0;
                         state<= 4'b0000;
-                        
-                        load_done <= 1;
                     end
                 end
 
@@ -278,7 +252,6 @@ reg [7:0] byte2;
                         //wdata_o <= {memctrl_data_in, read_data[31:8]};
                         read_data <= {memctrl_data_in, byte2, byte1, byte0};
                         work_done <= 1;
-                        load_done <= 1;
                         // if (`DEBUG) begin
                         //     $display("read ", wdata_o);
                         // end
@@ -301,7 +274,6 @@ reg [7:0] byte2;
 //                end
             endcase
         end else begin
-            load_done <= 0;
             work_done <= 0;
             state <= 4'b0000;
         end

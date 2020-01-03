@@ -18,34 +18,17 @@ module if_id(
     
 );
 
-//    always @ (posedge clk) begin
-//        if (rst == `RstEnable) begin
-//            id_pc <= `ZeroWord;
-//            id_inst <= `ZeroWord;
-//        end else if (stall[1] == `Stop && stall[2] == `NoStop) begin
-//            id_pc <= `ZeroWord;
-//            id_inst <= `ZeroWord;
-//        end else if (stall[1] == `NoStop) begin
-//            id_pc <= if_pc;
-//            id_inst <= if_inst;
-//        end
-//    end
-
         always @ (posedge clk) begin
             if (rst == `RstEnable || if_idflush_i) begin
                 id_pc <= `ZeroWord;
                 id_inst <= `ZeroWord;
             end else if (get_inst && stall[0] == `NoStop) begin
-                //FIXME:
-                // $display("if_id pass");
-                //$display(if_pc, " ", if_inst);
-                //$display(i)
-                id_pc <= if_pc;
-                id_inst <= if_inst;
-            end else if (!get_inst && stall[1] == `NoStop) begin
-                id_pc <= `ZeroWord;
-                id_inst <= `ZeroWord;
-            end
+                    id_pc <= if_pc;
+                    id_inst <= if_inst;
+                end else if (!get_inst && stall[1] == `NoStop) begin
+                    id_pc <= `ZeroWord;
+                    id_inst <= `ZeroWord;
+                end
         end
     
 endmodule
