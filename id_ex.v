@@ -14,7 +14,6 @@ module id_ex(
     
     input wire id_exflush_i,
     input wire [5:0] stall,
-    
         
     output reg[`RegBus] ex_pc,
     output reg[`AluOpBus] ex_aluop,
@@ -23,14 +22,15 @@ module id_ex(
     output reg[`RegBus] ex_reg2,
     output reg[`RegBus] imm_o,
     output reg[`RegAddrBus] ex_wd,
-    output reg ex_wreg
-
-   // output wire id_stall_req
+    output reg ex_wreg,
+    
+    input wire ex_jump_i,
+    output reg ex_jump_o
 );
 
 
     always @ (posedge clk) begin
-        if (rst == `RstEnable || id_exflush_i) begin
+        if (rst == `RstEnable) begin
             ex_pc <= `ZeroWord;
             ex_aluop <= `Inst_NOP;
             ex_alusel <= `NOP;
@@ -39,7 +39,20 @@ module id_ex(
             imm_o <= `ZeroWord;
             ex_wd <= `NOPRegAddr;
             ex_wreg <= `WriteDisable;       
+            ex_jump_o <= 0;    
         end else if (stall[1] == `Stop && stall[2] == `NoStop) begin
+            ex_pc <= `ZeroWord;
+            ex_aluop <= `Inst_NOP;
+            ex_alusel <= `NOP;
+            ex_reg1 <= `ZeroWord;
+            ex_reg2 <= `ZeroWord;
+            imm_o <= `ZeroWord;
+            ex_wd <= `NOPRegAddr;
+            ex_wreg <= `WriteDisable;
+            ex_jump_o <= 0;
+        end 
+        else if (stall[1] == `NoStop) begin
+            if (id_exflush_i) begin
                 ex_pc <= `ZeroWord;
                 ex_aluop <= `Inst_NOP;
                 ex_alusel <= `NOP;
@@ -47,9 +60,9 @@ module id_ex(
                 ex_reg2 <= `ZeroWord;
                 imm_o <= `ZeroWord;
                 ex_wd <= `NOPRegAddr;
-                ex_wreg <= `WriteDisable;
-            end 
-            else if (stall[1] == `NoStop) begin
+                ex_wreg <= `WriteDisable;       
+                ex_jump_o <= 0;    
+            end else begin
                 ex_pc <= id_pc;
                 ex_aluop <= id_aluop;
                 ex_alusel <= id_alusel;
@@ -58,6 +71,8 @@ module id_ex(
                 ex_reg2 <= id_reg2;
                 ex_wd <= id_wd;
                 ex_wreg <= id_wreg;
+                ex_jump_o <= ex_jump_i;
             end
+        end
     end
 endmodule

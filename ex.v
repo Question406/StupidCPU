@@ -30,15 +30,19 @@ module ex(
     output reg[`AluSelBus] mem_op_type,
     
     // for data forwarding
-    output wire ex_forwarding_wd
-//    output wire[`RegAddrBus] ex_forwarding_rd,
-//    output wire[`RegBus] ex_forwarding_data
+    output wire ex_forwarding_wd,
+
+    input wire jump_predict,
+    
+    output wire update_predictor,
+    output reg predict_success,
+    output wire [`InstAddrBus] branch_pc_o
 );
     
     assign ex_forwarding_wd = (aluop_i == `Inst_Load || aluop_i == `Inst_Save) ? 0 : wreg_o; 
-//    assign ex_forwarding_rd = wd_o;
-//    assign ex_forwarding_data = wdata_o;
     
+    assign update_predictor = (aluop_i == `Inst_Branch) ? 1 : 0;
+    assign branch_pc_o = pc_i;
     
     always @ (*) begin
         if (rst == `RstEnable) begin
@@ -52,6 +56,8 @@ module ex(
             mem_w_data <= `ZeroWord;
             mem_op_type <= 6'b0;
             mem_op_type <= `NOP;
+            
+            predict_success <= 0;
         end else begin
             if_idflush_o <= `InstNoFlush;
             id_exflush_o <=  `InstNoFlush;
@@ -60,6 +66,7 @@ module ex(
             mem_w_data <= 32'b0;
             wdata_o <= `ZeroWord;
             pc_addr_o <= `ZeroWord;
+            predict_success <= 0;
             wd_o <= 0;
             case (aluop_i) 
                 `Inst_LUI : begin
@@ -116,95 +123,180 @@ module ex(
 //                    end
                 end
                 `Inst_Branch : begin
-                    set_pc_o <= `WriteDisable;
-                    wd_o <= 5'b00000;
-                    wreg_o <= `WriteDisable;
-                    wdata_o <= `ZeroWord;
                     case (alusel_i)
                         `BEQ : begin
                                 if (reg1_i == reg2_i) begin
-                                    set_pc_o <= `WriteEnable;
-                                    pc_addr_o <= pc_i + imm_i;
-                                    if_idflush_o <= `InstFlush;
-                                    id_exflush_o <= `InstFlush;
-                                    
-//                                    if (`DEBUG) begin
-//                                        $display("BEQ ");
-//                                        $display("jump to ", pc_i + imm_i);
-//                                        $display("watchingpc ", pc_i);
-//                                    end
-                                end
+                                    if (~jump_predict) begin
+                                        set_pc_o <= `WriteEnable;
+                                        pc_addr_o <= pc_i + imm_i;
+                                        if_idflush_o <= `InstFlush;
+                                        id_exflush_o <= `InstFlush;
+                                        predict_success <= 0;
+                                    end else begin
+                                        predict_success <= 1;
+                                        set_pc_o <= `WriteDisable;
+                                        wd_o <= 5'b00000;
+                                        wreg_o <= `WriteDisable;
+                                    end
+                                end else begin
+                                    if (jump_predict) begin
+                                        set_pc_o <= `WriteEnable;
+                                        pc_addr_o <= pc_i + 32'h0004;
+                                        if_idflush_o <= `InstFlush;
+                                        id_exflush_o <= `InstFlush;
+                                        predict_success <= 0;
+                                    end else begin
+                                        predict_success <= 1;
+                                        set_pc_o <= `WriteDisable;
+                                        wd_o <= 5'b00000;
+                                        wreg_o <= `WriteDisable;
+                                    end
+                                end 
                         end
                         `BNE : begin
                                 if (reg1_i != reg2_i) begin
-                                    set_pc_o <= `WriteEnable;
-                                    pc_addr_o <= pc_i + imm_i;
-                                    if_idflush_o <= `InstFlush;
-                                    id_exflush_o <= `InstFlush;
-                                    
-//                                    if (`DEBUG) begin
-//                                        $display("BNE ");
-//                                        $display("jump to ", pc_i + imm_i);
-//                                        $display("watchingpc ", pc_i);
-//                                    end
-                                end
+                                    if (~jump_predict) begin
+                                        set_pc_o <= `WriteEnable;
+                                        pc_addr_o <= pc_i + imm_i;
+                                        if_idflush_o <= `InstFlush;
+                                        id_exflush_o <= `InstFlush;
+                                        predict_success <= 0;
+                                    end else begin
+                                        predict_success <= 1;
+                                        set_pc_o <= `WriteDisable;
+                                        wd_o <= 5'b00000;
+                                        wreg_o <= `WriteDisable;
+                                    end
+                                end else begin
+                                    if (jump_predict) begin
+                                        set_pc_o <= `WriteEnable;
+                                        pc_addr_o <= pc_i + 32'h0004;
+                                        if_idflush_o <= `InstFlush;
+                                        id_exflush_o <= `InstFlush;
+                                        predict_success <= 0;
+                                    end else begin
+                                        predict_success <= 1;
+                                        set_pc_o <= `WriteDisable;
+                                        wd_o <= 5'b00000;
+                                        wreg_o <= `WriteDisable;
+                                    end
+                                end 
                         end
                         `BLT : begin
                                 if ($signed(reg1_i) < $signed(reg2_i)) begin
-                                    set_pc_o <= `WriteEnable;
-                                    pc_addr_o <= pc_i + imm_i;
-                                    if_idflush_o <= `InstFlush;
-                                    id_exflush_o <= `InstFlush;
-                                    
-//                                    if (`DEBUG) begin
-//                                        $display("BLT ");
-//                                        $display("jump to ", pc_i + imm_i);
-//                                        $display("watchingpc ", pc_i);
-//                                    end
-                                end
+                                    if (~jump_predict) begin
+                                        set_pc_o <= `WriteEnable;
+                                        pc_addr_o <= pc_i + imm_i;
+                                        if_idflush_o <= `InstFlush;
+                                        id_exflush_o <= `InstFlush;
+                                        predict_success <= 0;
+                                    end else begin
+                                        predict_success <= 1;
+                                        set_pc_o <= `WriteDisable;
+                                        wd_o <= 5'b00000;
+                                        wreg_o <= `WriteDisable;
+                                    end
+                                end else begin
+                                    if (jump_predict) begin
+                                        set_pc_o <= `WriteEnable;
+                                        pc_addr_o <= pc_i + 32'h0004;
+                                        if_idflush_o <= `InstFlush;
+                                        id_exflush_o <= `InstFlush;
+                                        predict_success <= 0;
+                                    end else begin
+                                        predict_success <= 1;
+                                        set_pc_o <= `WriteDisable;
+                                        wd_o <= 5'b00000;
+                                        wreg_o <= `WriteDisable;
+                                    end
+                                end 
                         end
                         `BGE : begin
                                 if ($signed(reg1_i) >= $signed(reg2_i)) begin
-                                    set_pc_o <= `WriteEnable;
-                                    pc_addr_o <= pc_i + imm_i;
-                                    if_idflush_o <= `InstFlush;
-                                    id_exflush_o <= `InstFlush;
-                                    
-//                                    if (`DEBUG) begin
-//                                        $display("BGE ");
-//                                        $display("jump to ", pc_i + imm_i);
-//                                        $display("watchingpc ", pc_i);
-//                                    end
-                                end
+                                    if (~jump_predict) begin
+                                        set_pc_o <= `WriteEnable;
+                                        pc_addr_o <= pc_i + imm_i;
+                                        if_idflush_o <= `InstFlush;
+                                        id_exflush_o <= `InstFlush;
+                                        predict_success <= 0;
+                                    end else begin
+                                        predict_success <= 1;
+                                        set_pc_o <= `WriteDisable;
+                                        wd_o <= 5'b00000;
+                                        wreg_o <= `WriteDisable;
+                                    end
+                                end else begin
+                                    if (jump_predict) begin
+                                        set_pc_o <= `WriteEnable;
+                                        pc_addr_o <= pc_i + 32'h0004;
+                                        if_idflush_o <= `InstFlush;
+                                        id_exflush_o <= `InstFlush;
+                                        predict_success <= 0;
+                                    end else begin
+                                        predict_success <= 1;
+                                        set_pc_o <= `WriteDisable;
+                                        wd_o <= 5'b00000;
+                                        wreg_o <= `WriteDisable;
+                                    end
+                                end 
                         end
                         `BLTU : begin
                                 if (reg1_i < reg2_i) begin
-                                    set_pc_o <= `WriteEnable;
-                                    pc_addr_o <= pc_i + imm_i;
-                                    if_idflush_o <= `InstFlush;
-                                    id_exflush_o <= `InstFlush;
-                                    
-//                                    if (`DEBUG) begin
-//                                        $display("BLTU ");
-//                                        $display("jump to ", pc_i + imm_i);
-//                                        $display("watchingpc ", pc_i);
-//                                    end
-                                end
+                                    if (~jump_predict) begin
+                                        set_pc_o <= `WriteEnable;
+                                        pc_addr_o <= pc_i + imm_i;
+                                        if_idflush_o <= `InstFlush;
+                                        id_exflush_o <= `InstFlush;
+                                        predict_success <= 0;
+                                    end else begin
+                                        predict_success <= 1;
+                                        set_pc_o <= `WriteDisable;
+                                        wd_o <= 5'b00000;
+                                        wreg_o <= `WriteDisable;
+                                    end
+                                end else begin
+                                    if (jump_predict) begin
+                                        set_pc_o <= `WriteEnable;
+                                        pc_addr_o <= pc_i + 32'h0004;
+                                        if_idflush_o <= `InstFlush;
+                                        id_exflush_o <= `InstFlush;
+                                        predict_success <= 0;
+                                    end else begin
+                                        predict_success <= 1;
+                                        set_pc_o <= `WriteDisable;
+                                        wd_o <= 5'b00000;
+                                        wreg_o <= `WriteDisable;
+                                    end
+                                end 
                         end
                         `BGEU : begin
                                 if (reg1_i >= reg2_i) begin
-                                    set_pc_o <= `WriteEnable;
-                                    pc_addr_o <= pc_i + imm_i;
-                                    if_idflush_o <= `InstFlush;
-                                    id_exflush_o <= `InstFlush;
-                                    
-//                                    if (`DEBUG) begin
-//                                        $display("BGEU ");
-//                                        $display("jump to ", pc_i + imm_i);
-//                                        $display("watchingpc ", pc_i);
-//                                        $display("1 ", reg1_i, " 2 ", reg2_i);
-//                                    end
-                                end
+                                    if (~jump_predict) begin
+                                        set_pc_o <= `WriteEnable;
+                                        pc_addr_o <= pc_i + imm_i;
+                                        if_idflush_o <= `InstFlush;
+                                        id_exflush_o <= `InstFlush;
+                                        predict_success <= 0;
+                                    end else begin
+                                        predict_success <= 1;
+                                        set_pc_o <= `WriteDisable;
+                                        wd_o <= 5'b00000;
+                                        wreg_o <= `WriteDisable;
+                                    end
+                                end else begin
+                                    if (jump_predict) begin
+                                        set_pc_o <= `WriteEnable;
+                                        pc_addr_o <= pc_i + 32'h0004;
+                                        if_idflush_o <= `InstFlush;
+                                        id_exflush_o <= `InstFlush;
+                                        predict_success <= 0;
+                                    end else begin
+                                        predict_success <= 1;
+                                        set_pc_o <= `WriteDisable;
+                                        wd_o <= 5'b00000;
+                                        wreg_o <= `WriteDisable;
+                                    end
+                                end 
                         end
                         default: begin
                         end

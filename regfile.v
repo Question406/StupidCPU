@@ -16,6 +16,7 @@ module regfile(
     input wire[`RegAddrBus] raddr2,
     output reg[`RegBus] rdata2,
     
+        
     input wire[`AluSelBus] ex_optype,
     input wire[`RegAddrBus] ex_wd,
     output reg id_stall_req_o
@@ -35,10 +36,10 @@ module regfile(
         if (rst == `RstDisable) begin
             if ((we == `WriteEnable) && (waddr != `RegNumLog2'h0)) begin
                 regs[waddr] <= wdata;
-             //  $display("set ", waddr, " to ", $signed(wdata));
+              //  $display("set ", waddr, " to ", $signed(wdata));
             end
         end
-    end
+    end//
     
     //integer i;
 
@@ -69,6 +70,7 @@ module regfile(
             rdata2 <= `ZeroWord;
         end
     end
+    
     
     always @(*) begin
         if (rst == `RstEnable) begin

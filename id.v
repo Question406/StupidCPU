@@ -34,7 +34,11 @@ module id(
     output reg[`RegBus] reg1_o,
     output reg[`RegBus] reg2_o,
     output reg wreg_o,
-    output reg[`RegAddrBus] wd_o
+    output reg[`RegAddrBus] wd_o,
+    
+    // for predictor
+    input wire id_jump,
+    output wire ex_jump
 );
     
     wire[6:0] op_code = inst_i[6:0];
@@ -51,6 +55,8 @@ module id(
     wire[`RegBus] imm_J = {{12{inst_i[31]}}, inst_i[19:12], inst_i[20], inst_i[30:21], 1'b0};
    
     assign id_pc_o = pc_i;
+    assign ex_jump = id_jump;
+    
     
     always @ (*) begin
         if (rst == `RstEnable) begin

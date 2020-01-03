@@ -25,11 +25,11 @@
 *  of the hw system as specified, and returns the specified data.
 ***************************************************************************************************/
 
-// modification allowed for debugging purposes  
+// modification allowed for debugging purposes
 
 module hci
 #(
-  parameter SYS_CLK_FREQ = 210000000,
+  parameter SYS_CLK_FREQ = 50000000,
   parameter RAM_ADDR_WIDTH = 17,
   parameter BAUD_RATE = 115200
 )
@@ -257,12 +257,14 @@ always @*
             if (!io_in_empty) begin
               io_in_rd_en = 1'b1;
             end
+            
             //$display("IO:in:%c",io_dout);
+            
             if (!rx_empty && !io_in_full) begin
               rd_en   = 1'b1;
               d_io_in_wr_data = rd_data;
               d_io_in_wr_en = 1'b1;
-            end
+            end 
           end
         endcase
       end

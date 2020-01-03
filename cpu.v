@@ -146,6 +146,14 @@ wire cache_query;
 wire [`InstAddrBus] cache_query_addr;
 
 
+wire get_predict;
+wire update_predict;
+wire predict_success;
+wire [`InstAddrBus] last_branch_pc;
+wire [`InstAddrBus] predict_pc;
+wire if_jump;
+
+
 pc_reg pc_reg0(
     .clk(clk_in), .rst(rst_in),
 
@@ -161,23 +169,40 @@ pc_reg pc_reg0(
 
     .cache_enable(cache_enable), 
 //    .inst_cache_addr_o(inst_cache_addr), 
-    .inst_cache_o(inst_cache),
+//    .inst_cache_o(inst_cache),
 
     .cache_query(cache_query), .query_addr(cache_query_addr),
 
-    .inst_hit(inst_hit), .cache_inst_i(inst_hit_cache)
+    .inst_hit(inst_hit), .cache_inst_i(inst_hit_cache),
+    
+    .get_predict(get_predict),
+    .jump_predict(jump_predict),
+    .predict_addr(predict_pc),
+
+    .jump(if_jump)
 );
 
-//predictor predictor0(
-//    .rst(rst_in)
-//);
+predictor predictor0(
+    .rst(rst_in),
+    .clk(clk_in),
+    
+    .get_predict(get_predict),
+    .now_pc(addr_if), .now_branch_inst(if_inst),
+
+    .update_predict(update_predict),
+    .predict_success(predict_success),
+    .last_branch_pc(last_branch_pc),
+
+    .jump_predict(jump_predict),
+    .predict_pc(predict_pc)
+);
 
 inst_cache instcache0(
     .rst(rst_in), .clk(clk_in),
 
     .cache_query(cache_query), .query_addr(cache_query_addr),
 
-    .cache_enable(cache_enable), .inst_addr(addr_if), .inst_cache_i(inst_cache),
+    .cache_enable(cache_enable), .inst_addr(addr_if), .inst_cache_i(if_inst),
 
     .inst_hit_o(inst_hit), .inst_cache_o(inst_hit_cache)
 );
@@ -185,17 +210,20 @@ inst_cache instcache0(
 
 wire if_idflush;
 wire id_exflush;
+wire id_jump;
 
 if_id if_id0(
     .clk(clk_in), .rst(rst_in),
 
     .stall(stall),
 
-    .get_inst(get_inst), .if_pc(addr_if), .if_inst(if_inst),
+    .get_inst(get_inst), .if_pc(addr_if), .if_inst(if_inst), .jump(if_jump),
 
     .if_idflush_i(if_idflush),
 
-    .id_pc(id_pc_i), .id_inst(id_inst_i)
+    .id_pc(id_pc_i), .id_inst(id_inst_i),
+    
+    .id_jump(id_jump)
 );
 
     wire [`RegBus] imm;
@@ -204,6 +232,13 @@ if_id if_id0(
 
     wire last_load;
     wire load_done;
+    
+    wire id_ex_jump;
+    wire ex_jump;
+    
+    wire[`AluSelBus] mem_op_type;
+    wire [`RegBus] mmem_data;
+    
 
 id id0(
     .rst(rst_in), .pc_i(id_pc_i), .inst_i(id_inst_i),
@@ -225,13 +260,10 @@ id id0(
     .aluop_o(id_aluop_o), .alusel_o(id_alusel_o),
     .reg1_o(id_reg1_o), .reg2_o(id_reg2_o),
     .imm_o(imm),
-    .wd_o(id_wd_o), .wreg_o(id_wreg_o)       
+    .wd_o(id_wd_o), .wreg_o(id_wreg_o),
+    
+    .id_jump(id_jump), .ex_jump(id_ex_jump)
 );
-
-
-
-    wire[`AluSelBus] mem_op_type;
-    wire [`RegBus] mmem_data;
 
 regfile regfile1(
     .clk(clk_in), .rst(rst_in),
@@ -246,7 +278,7 @@ regfile regfile1(
     .raddr2(reg2_addr),
     .rdata2(reg2_data),
     
-    .ex_optype(mem_op_type),
+    .ex_optype(mem_op_type),     
     .ex_wd(ex_wd_o),             
     .id_stall_req_o(id_stall_req)
 );
@@ -262,16 +294,19 @@ wire [`RegBus] ex_pc;
         .id_reg1(id_reg1_o), .id_reg2(id_reg2_o),
         .imm_i(imm),
         .id_wd(id_wd_o), .id_wreg(id_wreg_o),
-        
+                
         .id_exflush_i(id_exflush),
 
         .ex_pc(ex_pc),
         .ex_aluop(ex_aluop_i), .ex_alusel(ex_alusel_i),
         .ex_reg1(ex_reg1_i), .ex_reg2(ex_reg2_i), .imm_o(imm_ex),
-        .ex_wd(ex_wd_i), .ex_wreg(ex_wreg_i)
+        .ex_wd(ex_wd_i), .ex_wreg(ex_wreg_i),
+        
+        .ex_jump_i(id_ex_jump), .ex_jump_o(ex_jump)
 
         //.now_load(last_load)
     );
+
 
     
     ex ex0(
@@ -292,9 +327,12 @@ wire [`RegBus] ex_pc;
 
         .mem_w_data(mmem_data), .mem_op_type(mem_op_type),
 
-        .ex_forwarding_wd(ex_forwarding_wd)
-//        .ex_forwarding_rd(ex_forwarding_rd), 
-//        .ex_forwarding_data(ex_forwarding_data)
+        .ex_forwarding_wd(ex_forwarding_wd),
+
+        .jump_predict(ex_jump), 
+        .update_predictor(update_predict),
+        .predict_success(predict_success),
+        .branch_pc_o(last_branch_pc)
     );
     
     wire[`AluSelBus] mem_op;
@@ -313,6 +351,17 @@ wire [`RegBus] ex_pc;
         .mem_wdata(mem_wdata_i), 
         .mmem_data_o(to_mem_data), .mem_op_type_o(mem_op)
     );
+    
+    wire dcache_enable;
+    wire [`RegBus] dcache_data;
+    wire [`RegBus] dcache_query_addr;
+    wire [`RegBus] dcache_cache_addr;
+    
+    wire [`AluSelBus] dcache_query_type;
+    wire dcache_query;
+    
+    wire dcache_get;
+    wire [`RegBus] dcache_get_data;
 
     mem mem0(
         .clk(clk_in),
@@ -332,7 +381,36 @@ wire [`RegBus] ex_pc;
         .mem_r_w(mem_req_r_w),
 
         .wd_o(mem_wd_o), .wreg_o(mem_wreg_o),
-        .wdata_o(mem_wdata_o)
+        .wdata_o(mem_wdata_o),
+        
+        //for dcache
+        .dcache_enable(dcache_enable),
+        .dcache_data_o(dcache_data),
+        .dcache_cache_addr(dcache_cache_addr),
+        
+        .dcache_hit(dcache_get),
+        .dcache_data_i(dcache_get_data),
+        
+        .dcache_query(dcache_query),
+        .dcache_query_addr(dcache_query_addr),
+        .dcache_query_type(dcache_query_type)
+        
+    );
+
+    dcache dcache0(
+        .rst(rst_in),
+        .clk(clk_in),
+        
+        .dcache_enable(dcache_enable),
+        .dcache_data_i(dcache_data),
+        .dcache_addr(dcache_cache_addr),
+        
+        .query_enable(dcache_query),
+        .query_addr(dcache_query_addr),
+        .query_type(dcache_query_type),
+        
+        .dcache_get(dcache_get),
+        .dcache_data_o(dcache_get_data)
     );    
 
     mem_wb mem_wb0(
