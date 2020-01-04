@@ -116,30 +116,30 @@ module inst_cache(
 //    (* ram_style = "registers" *) reg inst_valid1[`InstCacheBus];
     
     (* ram_style = "registers" *) reg [`InstBus] inst_cache1[`InstCacheBus];
-    (* ram_style = "registers" *) reg [6:0] inst_tag1[`InstCacheBus];
+    (* ram_style = "registers" *) reg [8:0] inst_tag1[`InstCacheBus];
     (* ram_style = "registers" *) reg inst_valid1[`InstCacheBus];
     
     (* ram_style = "registers" *) reg [`InstBus] inst_cache2[`InstCacheBus];
-    (* ram_style = "registers" *) reg [6:0] inst_tag2[`InstCacheBus];
+    (* ram_style = "registers" *) reg [8:0] inst_tag2[`InstCacheBus];
     (* ram_style = "registers" *) reg inst_valid2[`InstCacheBus];
     
     // for FIFO 2-way associative
     (* ram_style = "registers" *) reg changing_pos[`InstCacheBus];
 
     // temp caching info for an inst
-    wire [6:0] inst_caching_tag;
+    wire [8:0] inst_caching_tag;
     wire [6:0] inst_caching_column;
 
     assign inst_caching_column = inst_addr[8:2];
     assign inst_caching_tag = inst_addr[17 : 9];
 
     // query info
-    wire [6:0] query_inst_caching_tag;
+    wire [8:0] query_inst_caching_tag;
     wire [6:0] query_inst_caching_column;
     wire query_inst_valid1;
     wire query_inst_valid2;
-    wire [6:0] query_tag1;
-    wire [6:0] query_tag2;
+    wire [8:0] query_tag1;
+    wire [8:0] query_tag2;
 
     assign query_inst_caching_column = query_addr[8:2];
     assign query_inst_caching_tag = query_addr[17 : 9];
@@ -174,7 +174,7 @@ module inst_cache(
         end
     end
 
-    always @(clk) begin
+    always @(*) begin
         if (cache_query == 1) begin
             if (query_inst_valid1 && query_tag1 == query_inst_caching_tag) begin
                 inst_hit_o <= 1;

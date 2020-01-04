@@ -199,16 +199,13 @@ module pc_reg(
                 // wait for predictor
                 4'b1000: begin
                     if (!stall[0]) begin
+                        cache_enable <= 0;
                         get_predict <= 0;
-                        state <= 4'b0000;
-                        if_addr_req_o <= predict_addr;
-                         
                         jump <= jump_predict;
+                        state <= 4'b0001;
+                        cache_query <= 1;
                         get_inst <= 1;
-                        
-//                        if (jump_predict) begin
-//                         //  $display("watch");
-//                        end
+                        if_addr_req_o <= predict_addr;        
                     end if (stall[0]) begin
                         get_predict <= 1;
                     end

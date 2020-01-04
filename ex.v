@@ -40,7 +40,6 @@ module ex(
 );
     
     assign ex_forwarding_wd = (aluop_i == `Inst_Load || aluop_i == `Inst_Save) ? 0 : wreg_o; 
-    
     assign update_predictor = (aluop_i == `Inst_Branch) ? 1 : 0;
     assign branch_pc_o = pc_i;
     
