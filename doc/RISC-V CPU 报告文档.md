@@ -10,15 +10,17 @@
 
 + 六周期取指令流水版本（可超频至200mhz，pi的时间在1.0s左右）
 
-  256 * 32bit inst cache with DM
+  no predictor: 256 * 32bit inst cache with DM, pi的时间在1.0s左右
+
+  with predictor: 256 * 32bit inst cache with DM, pi的时间在0.8s左右
 
 + 六周期取指令流水版本（50mhz ok）
 
   127 * 32 * 2bit 2-way associative inst cache with FIFO
 
-  256 * 32bit data cache with DM
+  128 * 32bit data cache with DM
 
-  128 * 4bit (2,2) correlating BHT predictor
+  64 * 4bit (2,2) correlating BHT predictor
 
 ## 2、架构示意图
 
@@ -67,11 +69,11 @@
 
   + 128行*2，7位index，9位tag（18-2-7），2-way associative
 
-  + 对于这里的FIFO，使用了一个特别的的标记位（0or1）。由于initial语句以及循环语句不能综合，所以对于整个cache的置零是无法做到的，这样一般的判断某一路为空就往里赋值无法实现，所以使用这个标记位。
+  + 对于这里的FIFO实现，使用了一个特别的的标记位（0or1）。由于initial语句以及循环语句不能综合，所以对于整个cache的置零是无法做到的，这样一般的判断某一路为空就往里赋值无法实现，所以使用这个标记位。
 
     标记位为0时表示上一次对该行进行缓存时写在了1这一路，这一次应当写在0这一路
 
-    标记位为1时反过来，标记位为其他情况（初始情况时）向0这一路写，并将标记更改为1
+    标记位为1时反过来，标记位为其他情况（高阻态等初始情况时）向0这一路写，并将标记更改为1
 
 ## 5、遇到的问题
 
@@ -92,25 +94,3 @@
   d-cache的版本也是如此，经过多次尝试，2-way i-cache+ DM d-cache+（2，2）BHT predictor的版本只能在50mhz的情况下上板。
 
   最后阶段的调试心态爆炸，也没有时间，就只能这样了。
-
-#### 关于调试方法
-
-+ 在进行CPU的调试过程中一直都陷入矛盾，肉眼看波形图极度困难，后来在数理逻辑的学习中获得了灵感
-
-  在RegisterMachine的章节里我们知道程序运行状态可以由寄存器状态大致看出，于是得到输出所有对寄存器的更改的调试方法
-
-  即在regfile的写端口写下 ``` $display("write at ", reg_addr, "  ", wdata)```
-
-  然后通过与保证正确性的旧版本输出对比达到快速定位错误的效果
-
-## 6、参考资料与致谢
-
-[1] 自己动手写CPU,雷思磊,电子工业出版社,2014
-
-[2] 17届多位学长学姐的Github仓库
-
-
-
-特别感谢郭林松同学在5周期fetch以及RAW datahazard方面给我提供的帮助
-
-特别助教们在上板，超频等多方面的倾力帮助
