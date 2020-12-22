@@ -1,5 +1,7 @@
 # RISC-V CPU 报告文档
 
+![ll](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
+
 ## 1、简介
 
 ​		本次大作业实现了一个近似标准的五级流水CPU，支持rv32i指令集，共有三个主要版本。
